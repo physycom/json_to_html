@@ -3,7 +3,10 @@
 #include <string>
 #include "jsoncons/json.hpp"
 
-//using jsoncons::json;
+using namespace std;
+
+#define MAJOR_VERSION           1
+#define MINOR_VERSION           0
 
 const std::string header = 
 "<!DOCTYPE html>                                                              \n\
@@ -54,24 +57,93 @@ const std::string footer =
 </html>                                                                       \n\
 ";
 
-int main()
+int main(int argc, char** argv)
 {
-  std::ofstream html_script;
-  html_script.open("./gps_script.html");
-  html_script << header;
+// Usage
+  std::cout << "Json_to_Html (for Google Maps only) v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl;
+  std::cout << "Usage: " << argv[0] << " -i [input.json] -o [output.html]" << std::endl;
+  std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
+  std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
 
-  jsoncons::json gps_records = jsoncons::json::parse_file("./gps.json");
+// Parsing command line
+  std::string input_name, output_name;
+  if (argc > 2){ /* Parse arguments, if there are arguments supplied */
+    for (int i = 1; i < argc; i++){
+      if ((argv[i][0] == '-') || (argv[i][0] == '/')){       // switches or options...
+        switch (tolower(argv[i][1])){
+        case 'i':
+          input_name = argv[++i];
+          break;
+        case 'o':
+          output_name = argv[++i];
+          break;
+        default:    // no match...
+          std::cout << "Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
+          exit(1);
+        }
+      }
+      else {
+        std::cout << "Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
+        exit(11);
+      }
+    }
+  }
+  else { std::cout << "No flags specified. Read usage and relaunch properly." << std::endl; exit(111); }
+
+// Safety checks for file manipulations
+  ofstream output_file;
+  ifstream input_file;
+
+  if( input_name.size() > 5 ){
+    if( input_name.substr(input_name.size()-5,5)!=".json" ){
+      std::cout << input_name << " is not a valid .json file. Quitting..." << std::endl;
+      exit(2);
+    }
+  }
+  else{
+    std::cout << input_name << " is not a valid .json file. Quitting..." << std::endl;
+    exit(22);
+  }
+  input_file.open(input_name.c_str());  
+  if (!input_file.is_open()) {
+    cout << "FAILED: Input file " << input_name << " could not be opened." << endl;
+    cout << "Hit ENTER to close.\n"; cin.get();
+    exit(222);
+  }
+  else { cout << "SUCCESS: file " << input_name << " opened!\n"; }
+  input_file.close();
+
+  if( output_name.size() > 5 ){
+    if( output_name.substr(output_name.size()-5,5)!=".html" ){
+      std::cout << output_name << " is not a valid .html file. Quitting..." << std::endl;
+      exit(3);
+    }
+  }
+  else{
+    std::cout << output_name << " is not a valid .html file. Quitting..." << std::endl;
+    exit(33);
+  }
+  output_file.open(output_name.c_str());
+  if (!output_file.is_open()) {
+    cout << "FAILED: Output file " << output_name << " could not be opened." << endl;
+    cout << "Hit ENTER to close.\n"; cin.get();
+    exit(333);
+  }
+  else { cout << "SUCCESS: file " << output_name << " opened!\n"; }
+
+// Preparing HTML document
+  output_file << header;
+  jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
   for (size_t i = 0; i < gps_records.size(); ++i){
     try{
-      html_script << "[" << std::fixed << std::setprecision(6) << gps_records[i]["lat"].as<double>() << "," << gps_records[i]["lon"].as<double>() << "]" << (i!=gps_records.size()-1?',':' ') << "\n";
+      output_file << "[" << std::fixed << std::setprecision(6) << gps_records[i]["lat"].as<double>() << "," << gps_records[i]["lon"].as<double>() << "]" << (i!=gps_records.size()-1?',':' ') << "\n";
     }
     catch (const std::exception& e){
       std::cerr << e.what() << std::endl;
     }
   }
-
-  html_script << footer;
-  html_script.close();
+  output_file << footer;
+  output_file.close();
 
   return 0;
 }

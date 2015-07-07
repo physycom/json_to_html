@@ -32,3 +32,6 @@
 # Input/output files
 *.json
 *.kml
+
+# Folders
+data/

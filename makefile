@@ -1,2 +1,4 @@
+EXE=json2html.exe
+
 all:
-	g++ -std=c++11 -I. gps_json.cpp -o gsp_json.exe
+	g++ -std=c++11 -I. -o $(EXE) json_to_html.cpp 
