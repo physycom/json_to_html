@@ -2,71 +2,26 @@
 #include <stdexcept>
 #include <string>
 #include "jsoncons/json.hpp"
+#include "header_html.h"
 
 using namespace std;
 
 #define MAJOR_VERSION           1
 #define MINOR_VERSION           0
 
-const std::string header = 
-"<!DOCTYPE html>                                                              \n\
-<html>                                                                        \n\
-<head>                                                                        \n\
-  <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />   \n\
-  <title>Google Maps Multiple Markers</title>                                 \n\
-  <script src=\"http://maps.google.com/maps/api/js?sensor=false\"             \n\
-          type=\"text/javascript\"></script>                                  \n\
-</head>                                                                       \n\
-<body>                                                                        \n\
-  <div id=\"map\" style=\"width: 1200px; height: 600px;\"></div>              \n\
-                                                                              \n\
-  <script type=\"text/javascript\">                                           \n\
-    var locations = [                                                         \n\
-                                                                              \n\
-";
-
-const std::string footer = 
-"                                                                             \n\
-    ];                                                                        \n\
-                                                                              \n\
-    var map = new google.maps.Map(document.getElementById('map'), {           \n\
-      zoom: 17,                                                               \n\
-      center: new google.maps.LatLng(locations[0][0], locations[0][1]),       \n\
-      mapTypeId: google.maps.MapTypeId.ROADMAP                                \n\
-    });                                                                       \n\
-                                                                              \n\
-    var infowindow = new google.maps.InfoWindow();                            \n\
-                                                                              \n\
-    var marker, i;                                                            \n\
-                                                                              \n\
-    for (i = 0; i < locations.length; i++) {                                  \n\
-      marker = new google.maps.Marker({                                       \n\
-        position: new google.maps.LatLng(locations[i][0], locations[i][1]),   \n\
-        map: map                                                              \n\
-      });                                                                     \n\
-                                                                              \n\
-      google.maps.event.addListener(marker,'mouseover',(function(marker, i){  \n\
-        return function() {                                                   \n\
-          infowindow.setContent(locations[i][0]);                             \n\
-          infowindow.open(map, marker);                                       \n\
-        }                                                                     \n\
-      })(marker, i));                                                         \n\
-    }                                                                         \n\
-  </script>                                                                   \n\
-</body>                                                                       \n\
-</html>                                                                       \n\
-";
 
 int main(int argc, char** argv)
 {
 // Usage
   std::cout << "Json_to_Html (for Google Maps only) v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl;
-  std::cout << "Usage: " << argv[0] << " -i [input.json] -o [output.html]" << std::endl;
+  std::cout << "Usage: " << argv[0] << " -i [input.json] -o [output.html] -m or -p" << std::endl;
+  std::cout << "\t- -m markers mode / -p polyline mode" << std::endl;
   std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
   std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
 
+  
 // Parsing command line
-  std::string input_name, output_name;
+  std::string input_name, output_name, mode;
   if (argc > 2){ /* Parse arguments, if there are arguments supplied */
     for (int i = 1; i < argc; i++){
       if ((argv[i][0] == '-') || (argv[i][0] == '/')){       // switches or options...
@@ -77,6 +32,12 @@ int main(int argc, char** argv)
         case 'o':
           output_name = argv[++i];
           break;
+		case 'm':
+		  mode="marker";
+		  break;
+		case 'p':
+		  mode="poly";
+		  break;
         default:    // no match...
           std::cout << "Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
           exit(1);
@@ -106,7 +67,7 @@ int main(int argc, char** argv)
   }
   input_file.open(input_name.c_str());  
   if (!input_file.is_open()) {
-    cout << "FAILED: Input file " << input_name << " could not be opened." << endl;
+    cout << "FAILED: Input file " << input_name << " could not be opened." << std::endl;
     cout << "Hit ENTER to close.\n"; cin.get();
     exit(222);
   }
@@ -125,14 +86,20 @@ int main(int argc, char** argv)
   }
   output_file.open(output_name.c_str());
   if (!output_file.is_open()) {
-    cout << "FAILED: Output file " << output_name << " could not be opened." << endl;
+    cout << "FAILED: Output file " << output_name << " could not be opened." << std::endl;
     cout << "Hit ENTER to close.\n"; cin.get();
     exit(333);
   }
-  else { cout << "SUCCESS: file " << output_name << " opened!\n"; }
-
+  else { cout << "SUCCESS: file " << output_name << " opened!"<< std::endl; }
+  
+  if(!(mode=="marker"||mode=="poly")){
+    std::cout<<"Display mode is not specified. Quitting..."<< std::endl;
+	exit(4);
+  }
+  
 // Preparing HTML document
-  output_file << header;
+  if(mode=="marker")output_file << header_marker;
+  if(mode=="poly")output_file << header_poly;
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
   for (size_t i = 0; i < gps_records.size(); ++i){
     try{
@@ -142,7 +109,8 @@ int main(int argc, char** argv)
       std::cerr << e.what() << std::endl;
     }
   }
-  output_file << footer;
+  if(mode=="marker")output_file << footer_marker;
+  if(mode=="poly")output_file << footer_poly;
   output_file.close();
 
   return 0;

@@ -1,0 +1,1 @@
+aggiungere scelta della modalità nello script di powershell per ora lo fa in -p, cioé con le poly
