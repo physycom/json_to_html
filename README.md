@@ -6,9 +6,9 @@ A command line tool which extracts the gps coordinates (latitude and longitude) 
 
 ### Usage
 ```
-json2html.exe -i input.json -o output.html
+json2html.exe -i input.json -o output.html -m [or] -p
 ```
-where *input.json* must be an existing and valid .json file, while *output.html* is the name of the output script.
+where *input.json* must be an existing and valid .json file while *output.html* is the name of the output web page. To select the display mode choose one: *-m* for markers and *-p* for polylines.
 
 ### Input Sample
 

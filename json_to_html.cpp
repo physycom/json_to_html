@@ -33,10 +33,10 @@ int main(int argc, char** argv)
 {
 // Usage
   std::cout << "Json_to_Html (for Google Maps only) v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl;
-  std::cout << "Usage: " << argv[0] << " -i [input.json] -o [output.html] -m or -p" << std::endl;
-  std::cout << "\t- -m markers mode / -p polyline mode" << std::endl;
+  std::cout << "Usage: " << argv[0] << " -i [input.json] -o [output.html] -m [or] -p" << std::endl;
   std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
   std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
+  std::cout << "\t- -m markers mode / -p polyline mode" << std::endl;
 
   
 // Parsing command line
@@ -51,12 +51,12 @@ int main(int argc, char** argv)
         case 'o':
           output_name = argv[++i];
           break;
-		case 'm':
-		  mode="marker";
-		  break;
-		case 'p':
-		  mode="poly";
-		  break;
+    		case 'm':
+    		  mode="marker";
+    		  break;
+    		case 'p':
+    		  mode="poly";
+    		  break;
         default:    // no match...
           std::cout << "Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
           exit(1);
@@ -112,7 +112,7 @@ int main(int argc, char** argv)
   else { cout << "SUCCESS: file " << output_name << " opened!"<< std::endl; }
   
   if(!(mode=="marker"||mode=="poly")){
-    std::cout<<"Display mode is not specified. Quitting..."<< std::endl;
+    std::cout<<"Display mode not specified. Quitting..."<< std::endl;
 	exit(4);
   }
   
