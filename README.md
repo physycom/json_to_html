@@ -28,4 +28,4 @@ where *input.json* must be an existing and valid .json file while *output.html* 
 
 Brought to you with :heart: by:
 
-&copy; _Complex Systems Laboratory - Physics and Astronomy Department - University of Bologna_
+&copy; _Physics of Complex Systems Laboratory - Physics and Astronomy Department - University of Bologna_
