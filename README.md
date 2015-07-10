@@ -1,6 +1,3 @@
-# json_to_html
-A command line tool which extracts the gps coordinates (latitude and longitude) from a .json archive and creates a .html to display the trajectory in Google Maps.
-
 ### Installation
 **Make** and a **C++11** compatible compiler are required. Clone the repo and type ``make all`` in your favourite shell.
 
