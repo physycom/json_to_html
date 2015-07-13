@@ -13,13 +13,13 @@ where *input.json* must be an existing and valid .json file while *output.html* 
 {
     "gps_record_0000001":
     {
-        "your_field":your_content
+        "your_field":"your_content",
         "lat":44.5021611,
         "lon":11.3648926
     },
     "gps_record_0000002":
     {
-        "another_field":another_content
+        "another_field":"another_content",
         "lat":44.5021381,
         "lon":11.3648768
     },
