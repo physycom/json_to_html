@@ -22,7 +22,7 @@ where *input.json* must be an existing and valid .json file while *output.html* 
         "another_field":"another_content",
         "lat":44.5021381,
         "lon":11.3648768
-    },
+    }
 }
 ```
 
