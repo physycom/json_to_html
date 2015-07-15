@@ -120,14 +120,26 @@ int main(int argc, char** argv)
   if(mode=="marker")output_file << header_marker;
   if(mode=="poly")output_file << header_poly;
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
-  for (size_t i = 0; i < gps_records.size(); ++i){
-    try{
-      output_file << "[" << std::fixed << std::setprecision(6) << gps_records[i]["lat"].as<double>() << "," << gps_records[i]["lon"].as<double>() << "]" << (i!=gps_records.size()-1?',':' ') << "\n";
-    }
-    catch (const std::exception& e){
-      std::cerr << e.what() << std::endl;
-    }
-  }
+  if(gps_records.type() == 2) //array-style
+	  for (size_t i = 0; i < gps_records.size(); ++i){
+	    try{
+	      output_file << "[" << std::fixed << std::setprecision(6) << gps_records[i]["lat"].as<double>() << "," << gps_records[i]["lon"].as<double>() << "]" << (i!=gps_records.size()-1?',':' ') << "\n";
+	    }
+	    catch (const std::exception& e){
+	      std::cerr << e.what() << std::endl;
+	    }
+	  }
+	else if(gps_records.type() == 1) { //object-style
+		int i = 0;
+		for(auto rec = gps_records.begin_members(); rec != gps_records.end_members(); ++rec, ++i) {
+			try{
+	    	output_file << "[" << std::fixed << std::setprecision(6) << rec->value()["lat"].as<double>() << "," << rec->value()["lon"].as<double>() << "]" << (i!=gps_records.size()-1?',':' ') << "\n";
+	  	}
+		  catch (const std::exception& e){
+		    std::cerr << e.what() << std::endl;
+		  }
+		}
+	}
   if(mode=="marker")output_file << footer_marker;
   if(mode=="poly")output_file << footer_poly;
   output_file.close();

@@ -12,115 +12,115 @@
 
 namespace jsoncons {
 
-  template <typename Char>
-  class basic_json_output_handler
-  {
-  public:
+template <typename Char>
+class basic_json_output_handler
+{
+public:
     virtual ~basic_json_output_handler() {}
 
     // Overloaded methods
 
     void begin_json()
     {
-      do_begin_json();
+        do_begin_json();
     }
 
     void end_json()
     {
-      do_end_json();
+        do_end_json();
     }
 
     void begin_object()
     {
-      do_begin_object();
+        do_begin_object();
     }
 
     void end_object()
     {
-      do_end_object();
+        do_end_object();
     }
 
     void begin_array()
     {
-      do_begin_array();
+        do_begin_array();
     }
 
     void end_array()
     {
-      do_end_array();
+        do_end_array();
     }
 
     void name(const std::basic_string<Char>& name)
     {
-      do_name(&name[0], name.length());
+        do_name(name.c_str(), name.length());
     }
 
-    void name(const Char* p, size_t length)
+    void name(const Char* p, size_t length) 
     {
-      do_name(p, length);
+        do_name(p, length);
     }
 
-    void value(const std::basic_string<Char>& value)
+    void value(const std::basic_string<Char>& value) 
     {
-      do_string_value(&value[0], value.length());
+        do_string_value(value.c_str(), value.length());
     }
 
-    void value(const Char* p, size_t length)
+    void value(const Char* p, size_t length) 
     {
-      do_string_value(p, length);
+        do_string_value(p, length);
     }
 
-    void value(const Char* p)
+    void value(const Char* p) 
     {
-      do_string_value(p, std::char_traits<Char>::length(p));
+        do_string_value(p, std::char_traits<Char>::length(p));
     }
 
-    void value(int value)
+    void value(int value) 
     {
-      do_longlong_value(value);
+        do_longlong_value(value);
     }
 
-    void value(long value)
+    void value(long value) 
     {
-      do_longlong_value(value);
+        do_longlong_value(value);
     }
 
-    void value(long long value)
+    void value(long long value) 
     {
-      do_longlong_value(value);
+        do_longlong_value(value);
     }
 
-    void value(unsigned int value)
+    void value(unsigned int value) 
     {
-      do_ulonglong_value(value);
+        do_ulonglong_value(value);
     }
 
-    void value(unsigned long value)
+    void value(unsigned long value) 
     {
-      do_ulonglong_value(value);
+        do_ulonglong_value(value);
     }
 
-    void value(unsigned long long value)
+    void value(unsigned long long value) 
     {
-      do_ulonglong_value(value);
+        do_ulonglong_value(value);
     }
 
     void value(double value)
     {
-      do_double_value(value);
+        do_double_value(value);
     }
 
-    void value(bool value)
+    void value(bool value) 
     {
-      do_bool_value(value);
+        do_bool_value(value);
     }
 
     void value(null_type)
     {
-      do_null_value();
+        do_null_value();
     }
 
-  private:
+private:
 
     virtual void do_begin_json() = 0;
 
@@ -147,76 +147,76 @@ namespace jsoncons {
     virtual void do_ulonglong_value(unsigned long long value) = 0;
 
     virtual void do_bool_value(bool value) = 0;
-  };
+};
 
-  template <typename Char>
-  class null_json_output_handler_impl : public basic_json_output_handler < Char >
-  {
-  private:
+template <typename Char>
+class null_json_output_handler_impl : public basic_json_output_handler<Char>
+{
+private:
 
-    virtual void do_begin_json()
+    void do_begin_json() override
     {
     }
 
-    virtual void do_end_json()
+    void do_end_json() override
     {
     }
 
-    virtual void do_name(const Char* name, size_t length)
+    void do_name(const Char* name, size_t length) override
     {
     }
 
-    virtual void do_begin_object()
+    void do_begin_object() override
     {
     }
 
-    virtual void do_end_object()
+    void do_end_object() override
     {
     }
 
-    virtual void do_begin_array()
+    void do_begin_array() override
     {
     }
 
-    virtual void do_end_array()
+    void do_end_array() override
     {
     }
 
-    virtual void do_null_value()
+    void do_null_value() override
     {
     }
 
-    virtual void do_string_value(const Char*, size_t length)
+    void do_string_value(const Char*, size_t length) override
     {
     }
 
-    virtual void do_double_value(double)
+    void do_double_value(double) override
     {
     }
 
-    virtual void do_longlong_value(long long)
+    void do_longlong_value(long long) override
     {
     }
 
-    virtual void do_ulonglong_value(unsigned long long)
+    void do_ulonglong_value(unsigned long long) override
     {
     }
 
-    virtual void do_bool_value(bool)
+    void do_bool_value(bool) override
     {
     }
 
-  };
+};
 
-  template<typename Char>
-  basic_json_output_handler<Char>& null_json_output_handler()
-  {
+template<typename Char>
+basic_json_output_handler<Char>& null_json_output_handler()
+{
     static null_json_output_handler_impl<Char> instance;
     return instance;
-  }
+}
 
-  typedef basic_json_output_handler<char> json_output_handler;
-  typedef basic_json_output_handler<wchar_t> wjson_output_handler;
+typedef basic_json_output_handler<char> json_output_handler;
+typedef basic_json_output_handler<wchar_t> wjson_output_handler;
 
 }
 #endif
