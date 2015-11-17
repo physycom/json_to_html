@@ -14,50 +14,51 @@
 #include <istream>
 #include <ostream>
 #include <cstdlib>
-#include "jsoncons/jsoncons.hpp"
-#include "jsoncons/output_format.hpp"
-#include "jsoncons/json2.hpp"
-#include "jsoncons/json_output_handler.hpp"
 #include <limits> // std::numeric_limits
+#include <fstream>
+#include "jsoncons/jsoncons.hpp"
+#include "jsoncons/parse_error_handler.hpp"
+#include "jsoncons/output_format.hpp"
+#include "jsoncons/json_output_handler.hpp"
 
 namespace jsoncons {
 
-  template<typename Char>
-  class basic_json_serializer : public basic_json_output_handler < Char >
-  {
+template<typename Char>
+class basic_json_serializer : public basic_json_output_handler<Char>
+{
     struct stack_item
     {
-      stack_item(bool is_object)
-        : is_object_(is_object), count_(0), content_indented_(false)
-      {
-      }
-      bool is_object() const
-      {
-        return is_object_;
-      }
+        stack_item(bool is_object)
+           : is_object_(is_object), count_(0), content_indented_(false)
+        {
+        }
+        bool is_object() const
+        {
+            return is_object_;
+        }
 
-      bool is_object_;
-      size_t count_;
-      bool content_indented_;
+        bool is_object_;
+        size_t count_;
+        bool content_indented_;
     };
-  public:
+public:
     basic_json_serializer(std::basic_ostream<Char>& os)
-      : os_(std::addressof(os)), indent_(0), indenting_(false)
+       : os_(std::addressof(os)), indent_(0), indenting_(false)
     {
     }
 
     basic_json_serializer(std::basic_ostream<Char>& os, bool indenting)
-      : os_(std::addressof(os)), indent_(0), indenting_(indenting)
+       : os_(std::addressof(os)), indent_(0), indenting_(indenting)
     {
     }
 
     basic_json_serializer(std::basic_ostream<Char>& os, const basic_output_format<Char>& format)
-      : os_(std::addressof(os)), format_(format), indent_(0),
-      indenting_(false) // Deprecated behavior
+       : os_(std::addressof(os)), format_(format), indent_(0),
+         indenting_(false) // Deprecated behavior
     {
     }
     basic_json_serializer(std::basic_ostream<Char>& os, const basic_output_format<Char>& format, bool indenting)
-      : os_(std::addressof(os)), format_(format), indent_(0), indenting_(indenting)
+       : os_(std::addressof(os)), format_(format), indent_(0), indenting_(indenting)
     {
     }
 
@@ -65,221 +66,221 @@ namespace jsoncons {
     {
     }
 
-  private:
+private:
     // Implementing methods
-    virtual void do_begin_json()
+    void do_begin_json() override
     {
     }
 
-    virtual void do_end_json()
+    void do_end_json() override
     {
     }
 
-    virtual void do_begin_object()
+    void do_begin_object() override
     {
-      begin_structure();
+        begin_structure();
 
-      if (indenting_ && !stack_.empty() && stack_.back().is_object())
-      {
-        write_indent();
-      }
-      stack_.push_back(stack_item(true));
-      os_->put('{');
-      indent();
+        if (indenting_ && !stack_.empty() && stack_.back().is_object())
+        {
+            write_indent();
+        }
+        stack_.push_back(stack_item(true));
+        os_->put('{');
+        indent();
     }
 
-    virtual void do_end_object()
+    void do_end_object() override
     {
-      unindent();
-      if (indenting_ && !stack_.empty())
-      {
-        write_indent();
-      }
-      stack_.pop_back();
-      os_->put('}');
+        unindent();
+        if (indenting_ && !stack_.empty())
+        {
+            write_indent();
+        }
+        stack_.pop_back();
+        os_->put('}');
 
-      end_value();
+        end_value();
     }
 
-    virtual void do_begin_array()
+    void do_begin_array() override
     {
-      begin_structure();
+        begin_structure();
 
-      if (indenting_ && !stack_.empty() && stack_.back().is_object())
-      {
-        write_indent();
-      }
-      stack_.push_back(stack_item(false));
-      os_->put('[');
-      indent();
+        if (indenting_ && !stack_.empty() && stack_.back().is_object())
+        {
+            write_indent();
+        }
+        stack_.push_back(stack_item(false));
+        os_->put('[');
+        indent();
     }
 
-    virtual void do_end_array()
+    void do_end_array() override
     {
-      unindent();
-      if (indenting_ && !stack_.empty() && stack_.back().content_indented_)
-      {
-        write_indent();
-      }
-      stack_.pop_back();
-      os_->put(']');
+        unindent();
+        if (indenting_ && !stack_.empty() && stack_.back().content_indented_)
+        {
+            write_indent();
+        }
+        stack_.pop_back();
+        os_->put(']');
 
-      end_value();
+        end_value();
     }
 
-    virtual void do_name(const Char* name, size_t length)
+    void do_name(const Char* name, size_t length) override
     {
-      begin_element();
-      os_->put('\"');
-      escape_string<Char>(name, length, format_, *os_);
-      os_->put('\"');
-      os_->put(':');
+        begin_element();
+        os_->put('\"');
+        escape_string<Char>(name, length, format_, *os_);
+        os_->put('\"');
+        os_->put(':');
     }
 
-    virtual void do_null_value()
+    void do_null_value() override
     {
-      begin_value();
+        begin_value();
 
-      *os_ << json_char_traits<Char, sizeof(Char)>::null_literal();
+        *os_ << json_char_traits<Char,sizeof(Char)>::null_literal();
 
-      end_value();
+        end_value();
     }
 
-    virtual void do_string_value(const Char* value, size_t length)
+    void do_string_value(const Char* value, size_t length) override
     {
-      begin_value();
+        begin_value();
 
-      os_->put('\"');
-      escape_string<Char>(value, length, format_, *os_);
-      os_->put('\"');
+        os_->put('\"');
+        escape_string<Char>(value, length, format_, *os_);
+        os_->put('\"');
 
-      end_value();
+        end_value();
     }
 
-    virtual void do_double_value(double value)
+    void do_double_value(double value) override
     {
-      begin_value();
+        begin_value();
 
-      if (is_nan(value) && format_.replace_nan())
-      {
-        *os_ << format_.nan_replacement();
-      }
-      else if (is_pos_inf(value) && format_.replace_pos_inf())
-      {
-        *os_ << format_.pos_inf_replacement();
-      }
-      else if (is_neg_inf(value) && format_.replace_neg_inf())
-      {
-        *os_ << format_.neg_inf_replacement();
-      }
-      else if (format_.floatfield() != 0)
-      {
-        std::basic_ostringstream<Char> os;
-        os.imbue(std::locale::classic());
-        os.setf(format_.floatfield(), std::ios::floatfield);
-        os << std::showpoint << std::setprecision(format_.precision()) << value;
-        *os_ << os.str();
-      }
-      else
-      {
-        std::basic_string<Char> buf = double_to_string<Char>(value, format_.precision());
-        *os_ << buf;
-      }
+        if (is_nan(value) && format_.replace_nan())
+        {
+            *os_ << format_.nan_replacement();
+        }
+        else if (is_pos_inf(value) && format_.replace_pos_inf())
+        {
+            *os_ << format_.pos_inf_replacement();
+        }
+        else if (is_neg_inf(value) && format_.replace_neg_inf())
+        {
+            *os_ << format_.neg_inf_replacement();
+        }
+        else if (format_.floatfield() != 0)
+        {
+            std::basic_ostringstream<Char> os;
+            os.imbue(std::locale::classic());
+            os.setf(format_.floatfield(), std::ios::floatfield);
+            os << std::showpoint << std::setprecision(format_.precision()) << value;
+            *os_ << os.str();
+        }
+        else
+        {
+            std::basic_string<Char> buf = float_to_string<Char>(value,format_.precision());
+            *os_ << buf;
+        }
 
-      end_value();
+        end_value();
     }
 
-    virtual void do_longlong_value(long long value)
+    void do_longlong_value(long long value) override
     {
-      begin_value();
+        begin_value();
 
-      *os_ << value;
+        *os_ << value;
 
-      end_value();
+        end_value();
     }
 
-    virtual void do_ulonglong_value(unsigned long long value)
+    void do_ulonglong_value(unsigned long long value) override
     {
-      begin_value();
+        begin_value();
 
-      *os_ << value;
+        *os_ << value;
 
-      end_value();
+        end_value();
     }
 
-    virtual void do_bool_value(bool value)
+    void do_bool_value(bool value) override
     {
-      begin_value();
+        begin_value();
 
-      *os_ << (value ? json_char_traits<Char, sizeof(Char)>::true_literal() : json_char_traits<Char, sizeof(Char)>::false_literal());
+        *os_ << (value ? json_char_traits<Char,sizeof(Char)>::true_literal() :  json_char_traits<Char,sizeof(Char)>::false_literal());
 
-      end_value();
+        end_value();
     }
 
     void begin_element()
     {
-      if (!stack_.empty())
-      {
-        if (stack_.back().count_ > 0)
+        if (!stack_.empty())
         {
-          os_->put(',');
+            if (stack_.back().count_ > 0)
+            {
+                os_->put(',');
+            }
+            if (indenting_)
+            {
+                write_indent();
+            }
         }
-        if (indenting_)
-        {
-          write_indent();
-        }
-      }
     }
 
     void begin_value()
     {
-      if (!stack_.empty() && !stack_.back().is_object())
-      {
-        //begin_element();
-        if (stack_.back().count_ > 0)
+        if (!stack_.empty() && !stack_.back().is_object())
         {
-          os_->put(',');
+            //begin_element();
+            if (stack_.back().count_ > 0)
+            {
+                os_->put(',');
+            }
         }
-      }
     }
 
     void end_value()
     {
-      if (!stack_.empty())
-      {
-        ++stack_.back().count_;
-      }
+        if (!stack_.empty())
+        {
+            ++stack_.back().count_;
+        }
     }
 
     void begin_structure()
     {
-      if (!stack_.empty() && !stack_.back().is_object())
-      {
-        begin_element();
-      }
+        if (!stack_.empty() && !stack_.back().is_object())
+        {
+            begin_element();
+        }
     }
 
     void indent()
     {
-      indent_ += static_cast<int>(format_.indent());
+        indent_ += static_cast<int>(format_.indent());
     }
 
     void unindent()
     {
-      indent_ -= static_cast<int>(format_.indent());
+        indent_ -= static_cast<int>(format_.indent());
     }
 
     void write_indent()
     {
-      if (!stack_.empty())
-      {
-        stack_.back().content_indented_ = true;
-      }
-      os_->put('\n');
-      for (int i = 0; i < indent_; ++i)
-      {
-        os_->put(' ');
-      }
+        if (!stack_.empty())
+        {
+            stack_.back().content_indented_ = true;
+        }
+        os_->put('\n');
+        for (int i = 0; i < indent_; ++i)
+        {
+            os_->put(' ');
+        }
     }
 
     std::basic_ostream<Char>* os_;
@@ -290,10 +291,10 @@ namespace jsoncons {
     std::ios_base::fmtflags original_format_flags_;
 
     bool indenting_;
-  };
+};
 
-  typedef basic_json_serializer<char> json_serializer;
-  typedef basic_json_serializer<wchar_t> wjson_serializer;
+typedef basic_json_serializer<char> json_serializer;
+typedef basic_json_serializer<wchar_t> wjson_serializer;
 
 }
 #endif

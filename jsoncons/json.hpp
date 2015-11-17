@@ -8,7 +8,7 @@
 #ifndef JSONCONS_JSON_HPP
 #define JSONCONS_JSON_HPP
 
-#include "json1.hpp"
-#include "json2.hpp"
+#include "jsoncons/json1.hpp"
+#include "jsoncons/json2.hpp"
 
 #endif
