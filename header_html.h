@@ -104,7 +104,8 @@ R"(
       var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 17,
         center: new google.maps.LatLng(locations[1][0], locations[1][1]),
-        mapTypeId: google.maps.MapTypeId.SATELLITE
+//        mapTypeId: google.maps.MapTypeId.SATELLITE
+        mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
       var infowindow = new google.maps.InfoWindow();
