@@ -28,17 +28,17 @@ using namespace std;
 #define MAJOR_VERSION           1
 #define MINOR_VERSION           0
 
+void usage(char* progname){
+  // Usage
+    std::cout << "Json_to_Html (for Google Maps only) v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl;
+    std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -m [or] -p" << std::endl;
+    std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
+    std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
+    std::cout << "\t- -m markers mode / -p polyline mode" << std::endl;
+    exit(1);
+}
 
-int main(int argc, char** argv)
-{
-// Usage
-  std::cout << "Json_to_Html (for Google Maps only) v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl;
-  std::cout << "Usage: " << argv[0] << " -i [input.json] -o [output.html] -m [or] -p" << std::endl;
-  std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
-  std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
-  std::cout << "\t- -m markers mode / -p polyline mode" << std::endl;
-
-  
+int main(int argc, char** argv){
 // Parsing command line
   std::string input_name, output_name, mode;
   if (argc > 2){ /* Parse arguments, if there are arguments supplied */
@@ -58,17 +58,17 @@ int main(int argc, char** argv)
     		  mode="poly";
     		  break;
         default:    // no match...
-          std::cout << "Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
-          exit(1);
+          std::cout << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
+          usage(argv[0]);
         }
       }
       else {
-        std::cout << "Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
-        exit(11);
+        std::cout << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
+        usage(argv[0]);
       }
     }
   }
-  else { std::cout << "No flags specified. Read usage and relaunch properly." << std::endl; exit(111); }
+  else { std::cout << "ERROR: No flags specified. Read usage and relaunch properly." << std::endl; usage(argv[0]); }
 
 // Safety checks for file manipulations
   ofstream output_file;
