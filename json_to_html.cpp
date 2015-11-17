@@ -39,6 +39,7 @@ void usage(char* progname){
 }
 
 int main(int argc, char** argv){
+  std::cout << "********* JSON to HTML Converter *********" << endl;
 // Parsing command line
   std::string input_name, output_name, mode;
   std::string html_header, html_footer;
