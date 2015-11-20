@@ -80,8 +80,14 @@ R"(
     <title>
       Display TRIP 
     </title> 
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true">
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+    <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?v=3.21&sensor=false"></script>
+    <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?libraries=geometry"></script>  
+<!-- Local libraries -->
+    <script type="text/javascript" src="ruler/markerwithlabel.js"></script>
+    <script type="text/javascript" src="ruler/ContextMenu.js"></script>
+    <link rel="stylesheet" type="text/css" href="ruler/ruler_map.css">
+    <script type="text/javascript" src="ruler/ruler_map.js"></script>       
   </head> 
 
   <body>
@@ -90,7 +96,8 @@ R"(
     <script type="text/javascript">
       
     function initialize() {
-
+      
+      var map = null ;
       var locationstot = [
 
 )";
@@ -136,7 +143,7 @@ R"(
       });
   
       Traiettorie.setMap(map);
-  
+      ruler_map = new RulerMap( map ) ;
     }
 
     google.maps.event.addDomListener(window, 'load', initialize);
