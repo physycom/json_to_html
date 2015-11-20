@@ -119,13 +119,22 @@ R"(
 
       var marker, i;
 
-      for (i = 1; i < locations.length; i++) {
+      for (i = 0; i < locations.length; i++) {
+        
         marker = new google.maps.Marker({
           position: new google.maps.LatLng(locations[i][0], locations[i][1]),
           map: map,
           zIndex: locations[i][1],
           icon: 'http://maps.gpsvisualizer.com/google_maps/icons/circle/green.png'
         });
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(locations[i][2]);
+            infowindow.open(map, marker);
+          }
+        })(marker, i));
+
       }
 
       var poly_path = [];
