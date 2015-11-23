@@ -1,0 +1,27 @@
+.context_menu{
+	background-color:white;
+	border:1px solid gray;
+}
+.context_menu_item{
+	padding:3px 6px;
+}
+.context_menu_item:hover{
+	background-color:#CCCCCC;
+}
+.context_menu_separator{
+	background-color:gray;
+	height:1px;
+	margin:0;
+	padding:0;
+}		
+.labels {
+ color: red;
+ background-color: white;
+ font-family: "Lucida Grande", "Arial", sans-serif;
+ font-size: 10px;
+ font-weight: bold;
+ text-align: center;
+ width: 60px;     
+ border: 2px solid black;
+ white-space: nowrap;
+}
