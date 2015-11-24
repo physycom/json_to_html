@@ -1,7 +1,9 @@
 ### Installation
 **Make** and a **C++11** compatible compiler are required. Clone the repo and type ``make all`` in your favourite shell.
 
-Uses jsoncons library (https://github.com/danielaparker/jsoncons).
+There's also a **VS2015** solution avalaible.
+
+Uses [jsoncons library](https://github.com/danielaparker/jsoncons).
 
 
 ### Usage

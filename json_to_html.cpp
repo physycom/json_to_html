@@ -27,8 +27,8 @@ along with json_to_html. If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-#define MAJOR_VERSION           1
-#define MINOR_VERSION           1
+#define MAJOR_VERSION           2
+#define MINOR_VERSION           0
 
 void usage(char* progname){
   // Usage
@@ -133,17 +133,16 @@ int main(int argc, char** argv){
   if( gps_records.type() == 2 )                         //array-style
 	  for (size_t i = 0; i < gps_records.size(); ++i){
 	    try{
-	      //output_file << "[" << std::fixed << std::setprecision(6) << gps_records[i]["lat"].as<double>() << "," << gps_records[i]["lon"].as<double>() << "]" << (i!=gps_records.size()-1?',':' ') << "\n";
 	      output_file 
 		  << "[" 
 		  << std::fixed << std::setprecision(6) 
-		  << gps_records[i]["lat"].as<double>() 
+		  << ( gps_records[i].has_member("lat") ? gps_records[i]["lat"].as<double>() : 90.0 )
 		  << "," 
-		  << gps_records[i]["lon"].as<double>() 
+		  << ( gps_records[i].has_member("lon") ? gps_records[i]["lon"].as<double>() :  0.0 )
 		  <<",'"
-		  <<gps_records[i]["timestamp"].as<std::string>() 
+		  << ( gps_records[i].has_member("timestamp") ? gps_records[i]["timestamp"].as<std::string>() : "NULL" )
 		  << "']" 
-		  << (i!=gps_records.size()-1?',':' ') 
+		  << ( i != gps_records.size()-1 ? ',' : ' ' ) 
 		  << "\n";
 	    }
 	    catch (const std::exception& e){
@@ -157,13 +156,13 @@ int main(int argc, char** argv){
 	    	output_file 
 			<< "[" 
 			<< std::fixed << std::setprecision(6) 
-			<< rec->value()["lat"].as<double>() 
+			<< ( rec->value().has_member("lat") ? rec->value()["lat"].as<double>() : 90.0 ) 
 			<< "," 
-			<< rec->value()["lon"].as<double>() 
+			<< ( rec->value().has_member("lon") ? rec->value()["lon"].as<double>() : 0.0 )
 			<<",'" 
-			<<rec->value()["timestamp"].as<std::string>()
+			<< (rec->value().has_member("timestamp") ? rec->value()["timestamp"].as<std::string>() : "NULL" )
 			<< "']" 
-			<< (i!=gps_records.size()-1?',':' ') 
+			<< (i != gps_records.size() - 1 ? ',' : ' ')
 			<< "\n";
 	  	}
 		  catch (const std::exception& e){
