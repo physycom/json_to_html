@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with json_to_html. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <fstream>
 #include <stdexcept>
 #include <string>
