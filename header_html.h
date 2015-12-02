@@ -80,6 +80,13 @@ R"(
     <title>
       Display TRIP 
     </title> 
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
     <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?v=3.21&sensor=false"></script>
     <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?libraries=geometry"></script>  
@@ -91,7 +98,7 @@ R"(
   </head> 
 
   <body>
-    <div id="map" style="width: 1250px; height: 900px;"></div>
+    <div id="map" style="width: 100%; height: 100%;"></div>
     
     <script type="text/javascript">
       
