@@ -1,3 +1,6 @@
+[![Build Status Master](https://travis-ci.org/physycom/json_to_html.png?branch=master)](https://travis-ci.org/physycom/json_to_html "master")
+
+
 ### Installation
 **Make** and a **C++11** compatible compiler are required. Clone the repo and type ``make all`` in your favourite shell.
 
