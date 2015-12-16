@@ -130,7 +130,7 @@ int main(int argc, char** argv){
   
 // Generating HTML document
   output_file << html_header; 
-  if( gps_records.type() == 2 )                         //array-style
+  if( gps_records.is_array() )                         //array-style
 	  for (size_t i = 0; i < gps_records.size(); ++i){
 	    try{
 	      output_file 
@@ -149,7 +149,7 @@ int main(int argc, char** argv){
 	      std::cerr << e.what() << std::endl;
 	    }
 	  }
-	else if( gps_records.type() == 1 ) {                  //object-style
+	else if( gps_records.is_object() ) {                  //object-style
 		int i = 0;
 		for(auto rec = gps_records.begin_members(); rec != gps_records.end_members(); ++rec, ++i) {
 			try{
