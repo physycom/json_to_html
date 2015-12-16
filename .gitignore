@@ -8,7 +8,7 @@
 *.exe
 *.iobj
 *.ipdb
-
+*.opendb
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
