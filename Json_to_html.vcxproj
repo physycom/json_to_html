@@ -14,7 +14,7 @@
     <ProjectGuid>{87021DB5-07E6-4D4B-B495-5F06979FC5A4}</ProjectGuid>
     <RootNamespace>Json_to_html</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>json2html</ProjectName>
+    <ProjectName>json_to_html</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
