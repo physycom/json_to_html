@@ -32,19 +32,21 @@ using namespace std;
 
 void usage(char* progname) {
   // Usage
-  std::cout << "Json_to_Html (for Google Maps only) v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl;
-  std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -m [or] -p" << std::endl;
+  std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -[m/p] -u [undersampling] " << std::endl;
   std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
   std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
   std::cout << "\t- -m markers mode / -p polyline mode" << std::endl;
+  std::cout << "\t- [undersampling] a positive integer representing the undersampling factor" << std::endl;
   exit(1);
 }
 
 int main(int argc, char** argv) {
-  std::cout << "********* JSON to HTML Converter *********" << endl;
+  std::cout << "Json_to_Html (for Google Maps only) v" << MAJOR_VERSION << "." << MINOR_VERSION << std::endl;
+
   // Parsing command line
   std::string input_name, output_name, mode;
   std::string html_header, html_footer;
+  size_t undersampling = 1;
   if (argc > 2) { /* Parse arguments, if there are arguments supplied */
     for (int i = 1; i < argc; i++) {
       if ((argv[i][0] == '-') || (argv[i][0] == '/')) {       // switches or options...
@@ -63,6 +65,9 @@ int main(int argc, char** argv) {
           html_header = header_poly;
           html_footer = footer_poly;
           break;
+        case 'u':
+          undersampling = (size_t) atoi(argv[++i]);
+          break;
         default:    // no match...
           std::cout << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
           usage(argv[0]);
@@ -78,6 +83,7 @@ int main(int argc, char** argv) {
     std::cout << "ERROR: No flags specified. Read usage and relaunch properly." << std::endl;
     usage(argv[0]);
   }
+
 
   // Safety checks for file manipulations
   ofstream output_file;
@@ -125,6 +131,10 @@ int main(int argc, char** argv) {
     usage(argv[0]);
   }
 
+  if (undersampling == 0) {
+    std::cout << "WARNING: Undersampling factor is 0, set it to 1" << std::endl;
+  }
+
   // Parsing JSON gps database
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
 
@@ -132,6 +142,7 @@ int main(int argc, char** argv) {
   output_file << html_header;
   if (gps_records.is_array())                         //array-style
     for (size_t i = 0; i < gps_records.size(); ++i) {
+      if (i % undersampling) continue;
       try {
         output_file
           << "["
@@ -150,8 +161,9 @@ int main(int argc, char** argv) {
       }
     }
   else if (gps_records.is_object()) {                  //object-style
-    int i = 0;
+    size_t i = 0;
     for (auto rec = gps_records.begin_members(); rec != gps_records.end_members(); ++rec, ++i) {
+      if (i % undersampling) continue;
       try {
         output_file
           << "["
