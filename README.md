@@ -56,7 +56,7 @@ or object-style:
         "lon":11.3648768
     }
 }
-
+```
 Brought to you with :heart: by:
 
 &copy; _Physics of Complex Systems Laboratory - Physics and Astronomy Department - University of Bologna_
