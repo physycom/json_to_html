@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
           << ","
           << (gps_records[i].has_member("lon") ? gps_records[i]["lon"].as<double>() : 0.0)
           << ",'"
-          << (gps_records[i].has_member("date") ? gps_records[i]["date"].as<std::string>() : "NULL")
+          << (gps_records[i].has_member("date") ? gps_records[i]["date"].as<std::string>() : std::to_string(i))
           << "']"
           << (i != gps_records.size() - 1 ? ',' : ' ')
           << "\n";
@@ -172,7 +172,7 @@ int main(int argc, char** argv) {
           << ","
           << (rec->value().has_member("lon") ? rec->value()["lon"].as<double>() : 0.0)
           << ",'"
-          << (rec->value().has_member("date") ? rec->value()["date"].as<std::string>() : "NULL")
+          << (rec->value().has_member("date") ? rec->value()["date"].as<std::string>() : std::to_string(i))
           << "']"
           << (i != gps_records.size() - 1 ? ',' : ' ')
           << "\n";
