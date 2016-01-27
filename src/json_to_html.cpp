@@ -32,11 +32,12 @@ using namespace std;
 
 void usage(char* progname) {
   // Usage
-  std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -[m/p] -u [undersampling] " << std::endl;
+  std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -[m/p] -u [undersampling] -s" << std::endl;
   std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
   std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
   std::cout << "\t- -m markers mode / -p polyline mode" << std::endl;
   std::cout << "\t- [undersampling] a positive integer representing the undersampling factor" << std::endl;
+  std::cout << "\t- -s optional flag for short point description (timestamp only)" << std::endl;
   exit(1);
 }
 
@@ -47,6 +48,7 @@ int main(int argc, char** argv) {
   std::string input_name, output_name, mode;
   std::string html_header, html_footer;
   size_t undersampling = 1;
+  bool verbose = true;
   if (argc > 2) { /* Parse arguments, if there are arguments supplied */
     for (int i = 1; i < argc; i++) {
       if ((argv[i][0] == '-') || (argv[i][0] == '/')) {       // switches or options...
@@ -66,7 +68,10 @@ int main(int argc, char** argv) {
           html_footer = footer_poly;
           break;
         case 'u':
-          undersampling = (size_t) atoi(argv[++i]);
+          undersampling = (size_t)atoi(argv[++i]);
+          break;
+        case 's':
+          verbose = false;
           break;
         default:    // no match...
           std::cout << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
@@ -143,6 +148,16 @@ int main(int argc, char** argv) {
   if (gps_records.is_array())                         //array-style
     for (size_t i = 0; i < gps_records.size(); ++i) {
       if (i % undersampling) continue;
+      std::string tooltip(to_string(i));
+      if(gps_records[i].has_member("date")) tooltip = gps_records[i]["date"].as<std::string>();
+      if(verbose) {
+        if(gps_records[i].has_member("alt"))
+          tooltip += "<br />altitude: " + gps_records[i]["alt"].as<std::string>();
+        if(gps_records[i].has_member("heading"))
+          tooltip += "<br />heading: " + gps_records[i]["heading"].as<std::string>();
+        if(gps_records[i].has_member("speed") && gps_records[i]["speed"].is_array())
+          tooltip += "<br />speed: " + gps_records[i]["speed"][0].as<std::string>() + ", " + gps_records[i]["speed"][1].as<std::string>() + ", " + gps_records[i]["speed"][2].as<std::string>();
+      }
       try {
         output_file
           << "["
@@ -150,9 +165,9 @@ int main(int argc, char** argv) {
           << (gps_records[i].has_member("lat") ? gps_records[i]["lat"].as<double>() : 90.0)
           << ","
           << (gps_records[i].has_member("lon") ? gps_records[i]["lon"].as<double>() : 0.0)
-          << ",'"
-          << (gps_records[i].has_member("date") ? gps_records[i]["date"].as<std::string>() : std::to_string(i))
-          << "']"
+          << ",'<p>"
+          << tooltip
+          << "</p>']"
           << (i != gps_records.size() - 1 ? ',' : ' ')
           << "\n";
       }
@@ -164,6 +179,16 @@ int main(int argc, char** argv) {
     size_t i = 0;
     for (auto rec = gps_records.begin_members(); rec != gps_records.end_members(); ++rec, ++i) {
       if (i % undersampling) continue;
+      std::string tooltip(to_string(i));
+      if (rec->value().has_member("date")) tooltip = rec->value()["date"].as<std::string>();
+      if (verbose) {
+        if(rec->value().has_member("alt"))
+          tooltip += "<br />altitude: " + rec->value()["alt"].as<std::string>();
+        if(rec->value().has_member("heading"))
+          tooltip += "<br />heading: " + rec->value()["heading"].as<std::string>();
+        if(rec->value().has_member("speed") && rec->value()["speed"].is_array())
+          tooltip += "<br />speed: " + rec->value()["speed"][0].as<std::string>() + ", " + rec->value()["speed"][1].as<std::string>() + ", " + rec->value()["speed"][2].as<std::string>();
+      }
       try {
         output_file
           << "["
@@ -171,9 +196,9 @@ int main(int argc, char** argv) {
           << (rec->value().has_member("lat") ? rec->value()["lat"].as<double>() : 90.0)
           << ","
           << (rec->value().has_member("lon") ? rec->value()["lon"].as<double>() : 0.0)
-          << ",'"
-          << (rec->value().has_member("date") ? rec->value()["date"].as<std::string>() : std::to_string(i))
-          << "']"
+          << ",'<p>"
+          << tooltip
+          << "</p>']"
           << (i != gps_records.size() - 1 ? ',' : ' ')
           << "\n";
       }
