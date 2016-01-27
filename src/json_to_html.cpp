@@ -155,8 +155,17 @@ int main(int argc, char** argv) {
           tooltip += "<br />altitude: " + gps_records[i]["alt"].as<std::string>();
         if(gps_records[i].has_member("heading"))
           tooltip += "<br />heading: " + gps_records[i]["heading"].as<std::string>();
-        if(gps_records[i].has_member("speed") && gps_records[i]["speed"].is_array())
-          tooltip += "<br />speed: " + gps_records[i]["speed"][0].as<std::string>() + ", " + gps_records[i]["speed"][1].as<std::string>() + ", " + gps_records[i]["speed"][2].as<std::string>();
+        if(gps_records[i].has_member("speed"))
+          tooltip += "<br />speed: " + gps_records[i]["speed"].as<std::string>();
+        //if(gps_records[i].has_member("speed") && gps_records[i]["speed"].is_array())
+        //  tooltip += "<br />speed: " + gps_records[i]["speed"][0].as<std::string>() + ", " + gps_records[i]["speed"][1].as<std::string>() + ", " + gps_records[i]["speed"][2].as<std::string>();
+        if(gps_records[i].has_member("tracking_glonass")) {
+          tooltip += "<br />glonass sats (used/seen): " + gps_records[i]["using_glonass"].as<std::string>() + " / " + gps_records[i]["tracking_glonass"].as<std::string>();
+          tooltip += "<br />gps sats (used/seen): " + gps_records[i]["using_gps"].as<std::string>() + " / " + gps_records[i]["tracking_gps"].as<std::string>();
+          tooltip += "<br />total sats (used/seen): " + gps_records[i]["using_total"].as<std::string>() + " / " + gps_records[i]["tracking_total"].as<std::string>();
+        }
+        if(gps_records[i].has_member("fix"))
+          tooltip += "<br />fix: " + gps_records[i]["fix"].as<std::string>();
       }
       try {
         output_file
@@ -186,8 +195,17 @@ int main(int argc, char** argv) {
           tooltip += "<br />altitude: " + rec->value()["alt"].as<std::string>();
         if(rec->value().has_member("heading"))
           tooltip += "<br />heading: " + rec->value()["heading"].as<std::string>();
-        if(rec->value().has_member("speed") && rec->value()["speed"].is_array())
-          tooltip += "<br />speed: " + rec->value()["speed"][0].as<std::string>() + ", " + rec->value()["speed"][1].as<std::string>() + ", " + rec->value()["speed"][2].as<std::string>();
+        if(rec->value().has_member("speed"))
+          tooltip += "<br />speed: " + rec->value()["speed"].as<std::string>();
+        //if(rec->value().has_member("speed") && rec->value()["speed"].is_array())
+        //  tooltip += "<br />speed: " + rec->value()["speed"][0].as<std::string>() + ", " + rec->value()["speed"][1].as<std::string>() + ", " + rec->value()["speed"][2].as<std::string>();
+        if(rec->value().has_member("tracking_glonass")) {
+          tooltip += "<br />glonass sats (used/seen): " + rec->value()["using_glonass"].as<std::string>() + " / " + rec->value()["tracking_glonass"].as<std::string>();
+          tooltip += "<br />gps sats (used/seen): " + rec->value()["using_gps"].as<std::string>() + " / " + rec->value()["tracking_gps"].as<std::string>();
+          tooltip += "<br />total sats (used/seen): " + rec->value()["using_total"].as<std::string>() + " / " + rec->value()["tracking_total"].as<std::string>();
+        }
+        if(rec->value().has_member("fix"))
+          tooltip += "<br />fix: " + gps_records[i]["fix"].as<std::string>();
       }
       try {
         output_file
