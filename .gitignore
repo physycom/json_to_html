@@ -20,6 +20,10 @@ bld/
 [Oo]bj/
 data/
 
+#input output
+*.json
+*.html
+
 # Roslyn cache directories
 *.ide/
 
