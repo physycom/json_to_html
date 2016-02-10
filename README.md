@@ -1,4 +1,5 @@
 [![Build Status Master](https://travis-ci.org/physycom/json_to_html.png?branch=master)](https://travis-ci.org/physycom/json_to_html "master")
+[![Build status](https://ci.appveyor.com/api/projects/status/w7o0yyvsgfuv4bnv?svg=true)](https://ci.appveyor.com/project/cenit/json-to-html)
 
 
 ### Installation
