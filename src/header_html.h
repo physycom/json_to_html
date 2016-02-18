@@ -87,10 +87,8 @@ R"(
         padding: 0px
       }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
-    <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?v=3.21&sensor=false"></script>
-    <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?libraries=geometry"></script>  
-<!-- Local libraries -->
+    <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<!-- Remote Physycom libraries -->
     <script type="text/javascript" src="https://raw.githubusercontent.com/physycom/ruler/master/markerwithlabel.js"></script>
     <script type="text/javascript" src="https://raw.githubusercontent.com/physycom/ruler/master/ContextMenu.js"></script>
     <link rel="stylesheet" type="text/css" href="http://cdn.rawgit.com/physycom/ruler/master/ruler_map.css">
