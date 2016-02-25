@@ -149,7 +149,7 @@ int main(int argc, char** argv) {
     for (size_t i = 0; i < gps_records.size(); ++i) {
       if (i % undersampling) continue;
       std::string tooltip(to_string(i));
-      if(gps_records[i].has_member("date")) tooltip = gps_records[i]["date"].as<std::string>();
+      if(gps_records[i].has_member("date")) tooltip = "date: "+gps_records[i]["date"].as<std::string>();
       if(verbose) {
         if(gps_records[i].has_member("alt"))
           tooltip += "<br />altitude: " + gps_records[i]["alt"].as<std::string>();
