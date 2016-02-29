@@ -28,7 +28,7 @@ along with json_to_html. If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 #define MAJOR_VERSION           2
-#define MINOR_VERSION           0
+#define MINOR_VERSION           1
 
 void usage(char* progname) {
   // Usage
@@ -140,91 +140,59 @@ int main(int argc, char** argv) {
     std::cout << "WARNING: Undersampling factor is 0, set it to 1" << std::endl;
   }
 
-  // Parsing JSON gps database
+  // Parsing JSON gps database and create a local copy 
+  // to shorten code
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
+  std::vector<jsoncons::json> gps_records_copy;
+  if (gps_records.is_array()) {
+    for (size_t k = 0; k < gps_records.size(); k++) {
+      gps_records_copy.push_back(gps_records[k]);
+    }
+  }
+  else if (gps_records.is_object()) {
+    for (auto it = gps_records.begin_members(); it != gps_records.end_members(); it++) {
+      gps_records_copy.push_back(it->value());
+    }
+  }
+  else {
+    std::cout << "BAD json, not array nor object...?!?!" << std::endl;
+    exit(321);
+  }
 
   // Generating HTML document
   output_file << html_header;
-  if (gps_records.is_array())                         //array-style
-    for (size_t i = 0; i < gps_records.size(); ++i) {
-      if (i % undersampling) continue;
-      std::string tooltip(to_string(i));
-      if(gps_records[i].has_member("date")) tooltip = "date: "+gps_records[i]["date"].as<std::string>();
-      if(verbose) {
-        if(gps_records[i].has_member("alt"))
-          tooltip += "<br />altitude: " + gps_records[i]["alt"].as<std::string>();
-        if(gps_records[i].has_member("heading"))
-          tooltip += "<br />heading: " + gps_records[i]["heading"].as<std::string>();
-        if(gps_records[i].has_member("speed"))
-          tooltip += "<br />speed: " + gps_records[i]["speed"].as<std::string>();
-        //if(gps_records[i].has_member("speed") && gps_records[i]["speed"].is_array())
-        //  tooltip += "<br />speed: " + gps_records[i]["speed"][0].as<std::string>() + ", " + gps_records[i]["speed"][1].as<std::string>() + ", " + gps_records[i]["speed"][2].as<std::string>();
-        if(gps_records[i].has_member("tracking_glonass")) {
-          tooltip += "<br />glonass sats (used/seen): " + gps_records[i]["using_glonass"].as<std::string>() + " / " + gps_records[i]["tracking_glonass"].as<std::string>();
-          tooltip += "<br />gps sats (used/seen): " + gps_records[i]["using_gps"].as<std::string>() + " / " + gps_records[i]["tracking_gps"].as<std::string>();
-          tooltip += "<br />total sats (used/seen): " + gps_records[i]["using_total"].as<std::string>() + " / " + gps_records[i]["tracking_total"].as<std::string>();
-        }
-        if(gps_records[i].has_member("fix"))
-          tooltip += "<br />fix: " + gps_records[i]["fix"].as<std::string>();
+  for (size_t i = 0; i < gps_records_copy.size(); ++i) {
+    if (i % undersampling) continue;
+    std::string tooltip(to_string(i));
+    if (verbose) {
+      if (gps_records_copy[i].has_member("date"))
+        tooltip = "date: " + gps_records_copy[i]["date"].as<std::string>();
+      if (gps_records_copy[i].has_member("alt"))
+        tooltip += "<br />altitude: " + gps_records_copy[i]["alt"].as<std::string>();
+      if (gps_records_copy[i].has_member("heading"))
+        tooltip += "<br />heading: " + gps_records_copy[i]["heading"].as<std::string>();
+      if (gps_records_copy[i].has_member("speed"))
+        tooltip += "<br />speed: " + gps_records_copy[i]["speed"].as<std::string>();
+      if (gps_records_copy[i].has_member("tracking_glonass")) {
+        tooltip += "<br />glonass sats (used/seen): " + gps_records_copy[i]["using_glonass"].as<std::string>() + " / " + gps_records_copy[i]["tracking_glonass"].as<std::string>();
+        tooltip += "<br />gps sats (used/seen): " + gps_records_copy[i]["using_gps"].as<std::string>() + " / " + gps_records_copy[i]["tracking_gps"].as<std::string>();
+        tooltip += "<br />total sats (used/seen): " + gps_records_copy[i]["using_total"].as<std::string>() + " / " + gps_records_copy[i]["tracking_total"].as<std::string>();
       }
-      try {
-        output_file
-          << "["
-          << std::fixed << std::setprecision(6)
-          << (gps_records[i].has_member("lat") ? gps_records[i]["lat"].as<double>() : 90.0)
-          << ","
-          << (gps_records[i].has_member("lon") ? gps_records[i]["lon"].as<double>() : 0.0)
-          << ",'<p>"
-          << tooltip
-          << "</p>']"
-          << (i != gps_records.size() - 1 ? ',' : ' ')
-          << "\n";
-      }
-      catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-      }
+      if (gps_records_copy[i].has_member("fix"))
+        tooltip += "<br />fix: " + gps_records_copy[i]["fix"].as<std::string>();
     }
-  else if (gps_records.is_object()) {                  //object-style
-    size_t i = 0;
-    for (auto rec = gps_records.begin_members(); rec != gps_records.end_members(); ++rec, ++i) {
-      if (i % undersampling) continue;
-      std::string tooltip(to_string(i));
-      if (rec->value().has_member("date")) tooltip = rec->value()["date"].as<std::string>();
-      if (verbose) {
-        if(rec->value().has_member("alt"))
-          tooltip += "<br />altitude: " + rec->value()["alt"].as<std::string>();
-        if(rec->value().has_member("heading"))
-          tooltip += "<br />heading: " + rec->value()["heading"].as<std::string>();
-        if(rec->value().has_member("speed"))
-          tooltip += "<br />speed: " + rec->value()["speed"].as<std::string>();
-        //if(rec->value().has_member("speed") && rec->value()["speed"].is_array())
-        //  tooltip += "<br />speed: " + rec->value()["speed"][0].as<std::string>() + ", " + rec->value()["speed"][1].as<std::string>() + ", " + rec->value()["speed"][2].as<std::string>();
-        if(rec->value().has_member("tracking_glonass")) {
-          tooltip += "<br />glonass sats (used/seen): " + rec->value()["using_glonass"].as<std::string>() + " / " + rec->value()["tracking_glonass"].as<std::string>();
-          tooltip += "<br />gps sats (used/seen): " + rec->value()["using_gps"].as<std::string>() + " / " + rec->value()["tracking_gps"].as<std::string>();
-          tooltip += "<br />total sats (used/seen): " + rec->value()["using_total"].as<std::string>() + " / " + rec->value()["tracking_total"].as<std::string>();
-        }
-        if(rec->value().has_member("fix"))
-          tooltip += "<br />fix: " + gps_records[i]["fix"].as<std::string>();
-      }
-      try {
-        output_file
-          << "["
-          << std::fixed << std::setprecision(6)
-          << (rec->value().has_member("lat") ? rec->value()["lat"].as<double>() : 90.0)
-          << ","
-          << (rec->value().has_member("lon") ? rec->value()["lon"].as<double>() : 0.0)
-          << ",'<p>"
-          << tooltip
-          << "</p>']"
-          << (i != gps_records.size() - 1 ? ',' : ' ')
-          << "\n";
-      }
-      catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-      }
-    }
-  }
+    output_file
+        << "["
+        << std::fixed << std::setprecision(6)
+        << (gps_records_copy[i].has_member("lat") ? gps_records_copy[i]["lat"].as<double>() : 90.0)
+        << ","
+        << (gps_records_copy[i].has_member("lon") ? gps_records_copy[i]["lon"].as<double>() : 0.0)
+        << ",'<p>"
+        << tooltip
+        << "</p>']"
+        << (i != gps_records_copy.size() - 1 ? ',' : ' ')
+        << "\n";
+  } 
   output_file << html_footer;
   output_file.close();
 
