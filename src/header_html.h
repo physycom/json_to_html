@@ -126,11 +126,21 @@ R"(
 
       for (i = 0; i < locations.length; i++) {
         
+        var color_url;
+        if( locations[i][2].search("first_last") != -1 ) 
+          color_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/blue.png';
+        else if ( locations[i][2].search("rdp_engine") != -1 ) 
+          color_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/green.png';
+        else if ( locations[i][2].search("smart_restore") != -1 ) 
+          color_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/yellow.png';
+        else
+          color_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/green.png';
+
         marker = new google.maps.Marker({
           position: new google.maps.LatLng(locations[i][0], locations[i][1]),
           map: map,
           zIndex: locations[i][1],
-          icon: 'http://maps.gpsvisualizer.com/google_maps/icons/circle/green.png'
+          icon: color_url
         });
 
         google.maps.event.addListener(marker, 'click', (function(marker, i) {

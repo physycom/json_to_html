@@ -173,6 +173,8 @@ int main(int argc, char** argv) {
         tooltip += "<br />heading: " + gps_records_copy[i]["heading"].as<std::string>();
       if (gps_records_copy[i].has_member("speed"))
         tooltip += "<br />speed: " + gps_records_copy[i]["speed"].as<std::string>();
+      if (gps_records_copy[i].has_member("enabling"))
+        tooltip += "<br />enabling: " + gps_records_copy[i]["enabling"].as<std::string>();
       if (gps_records_copy[i].has_member("tracking_glonass")) {
         tooltip += "<br />glonass sats (used/seen): " + gps_records_copy[i]["using_glonass"].as<std::string>() + " / " + gps_records_copy[i]["tracking_glonass"].as<std::string>();
         tooltip += "<br />gps sats (used/seen): " + gps_records_copy[i]["using_gps"].as<std::string>() + " / " + gps_records_copy[i]["tracking_gps"].as<std::string>();
