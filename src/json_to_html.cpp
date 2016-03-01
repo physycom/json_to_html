@@ -159,8 +159,6 @@ int main(int argc, char** argv) {
     exit(321);
   }
 
-  std::cout << "sixe ptr " << sizeof(gps_records_copy[0])*gps_records_copy.size() << "    size j " << sizeof(gps_records[0])*gps_records_copy.size() << std::endl;
-
   // Generating HTML document
   output_file << html_header;
   for (size_t i = 0; i < gps_records_copy.size(); ++i) {
