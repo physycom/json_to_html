@@ -143,15 +143,15 @@ int main(int argc, char** argv) {
   // Parsing JSON gps database and create a local copy 
   // to shorten code
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
-  std::vector<jsoncons::json> gps_records_copy;
+  std::vector<jsoncons::json *> gps_records_copy;
   if (gps_records.is_array()) {
     for (size_t k = 0; k < gps_records.size(); k++) {
-      gps_records_copy.push_back(gps_records[k]);
+      gps_records_copy.push_back(&(gps_records[k]));
     }
   }
   else if (gps_records.is_object()) {
     for (auto it = gps_records.begin_members(); it != gps_records.end_members(); it++) {
-      gps_records_copy.push_back(it->value());
+      gps_records_copy.push_back(&(it->value()));
     }
   }
   else {
@@ -159,36 +159,38 @@ int main(int argc, char** argv) {
     exit(321);
   }
 
+  std::cout << "sixe ptr " << sizeof(gps_records_copy[0])*gps_records_copy.size() << "    size j " << sizeof(gps_records[0])*gps_records_copy.size() << std::endl;
+
   // Generating HTML document
   output_file << html_header;
   for (size_t i = 0; i < gps_records_copy.size(); ++i) {
     if (i % undersampling) continue;
     std::string tooltip(to_string(i));
     if (verbose) {
-      if (gps_records_copy[i].has_member("date"))
-        tooltip = "date: " + gps_records_copy[i]["date"].as<std::string>();
-      if (gps_records_copy[i].has_member("alt"))
-        tooltip += "<br />altitude: " + gps_records_copy[i]["alt"].as<std::string>();
-      if (gps_records_copy[i].has_member("heading"))
-        tooltip += "<br />heading: " + gps_records_copy[i]["heading"].as<std::string>();
-      if (gps_records_copy[i].has_member("speed"))
-        tooltip += "<br />speed: " + gps_records_copy[i]["speed"].as<std::string>();
-      if (gps_records_copy[i].has_member("enabling"))
-        tooltip += "<br />enabling: " + gps_records_copy[i]["enabling"].as<std::string>();
-      if (gps_records_copy[i].has_member("tracking_glonass")) {
-        tooltip += "<br />glonass sats (used/seen): " + gps_records_copy[i]["using_glonass"].as<std::string>() + " / " + gps_records_copy[i]["tracking_glonass"].as<std::string>();
-        tooltip += "<br />gps sats (used/seen): " + gps_records_copy[i]["using_gps"].as<std::string>() + " / " + gps_records_copy[i]["tracking_gps"].as<std::string>();
-        tooltip += "<br />total sats (used/seen): " + gps_records_copy[i]["using_total"].as<std::string>() + " / " + gps_records_copy[i]["tracking_total"].as<std::string>();
+      if (gps_records_copy[i]->has_member("date"))
+        tooltip = "date: " + gps_records_copy[i]->at("date").as<std::string>();
+      if (gps_records_copy[i]->has_member("alt"))
+        tooltip += "<br />altitude: " + gps_records_copy[i]->at("alt").as<std::string>();
+      if (gps_records_copy[i]->has_member("heading"))
+        tooltip += "<br />heading: " + gps_records_copy[i]->at("heading").as<std::string>();
+      if (gps_records_copy[i]->has_member("speed"))
+        tooltip += "<br />speed: " + gps_records_copy[i]->at("speed").as<std::string>();
+      if (gps_records_copy[i]->has_member("enabling"))
+        tooltip += "<br />enabling: " + gps_records_copy[i]->at("enabling").as<std::string>();
+      if (gps_records_copy[i]->has_member("tracking_glonass")) {
+        tooltip += "<br />glonass sats (used/seen): " + gps_records_copy[i]->at("using_glonass").as<std::string>() + " / " + gps_records_copy[i]->at("tracking_glonass").as<std::string>();
+        tooltip += "<br />gps sats (used/seen): " + gps_records_copy[i]->at("using_gps").as<std::string>() + " / " + gps_records_copy[i]->at("tracking_gps").as<std::string>();
+        tooltip += "<br />total sats (used/seen): " + gps_records_copy[i]->at("using_total").as<std::string>() + " / " + gps_records_copy[i]->at("tracking_total").as<std::string>();
       }
-      if (gps_records_copy[i].has_member("fix"))
-        tooltip += "<br />fix: " + gps_records_copy[i]["fix"].as<std::string>();
+      if (gps_records_copy[i]->has_member("fix"))
+        tooltip += "<br />fix: " + gps_records_copy[i]->at("fix").as<std::string>();
     }
     output_file
         << "["
         << std::fixed << std::setprecision(6)
-        << (gps_records_copy[i].has_member("lat") ? gps_records_copy[i]["lat"].as<double>() : 90.0)
+        << (gps_records_copy[i]->has_member("lat") ? gps_records_copy[i]->at("lat").as<double>() : 90.0)
         << ","
-        << (gps_records_copy[i].has_member("lon") ? gps_records_copy[i]["lon"].as<double>() : 0.0)
+        << (gps_records_copy[i]->has_member("lon") ? gps_records_copy[i]->at("lon").as<double>() : 0.0)
         << ",'<p>"
         << tooltip
         << "</p>']"
