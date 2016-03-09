@@ -27,8 +27,12 @@ along with json_to_html. If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-#define MAJOR_VERSION           2
-#define MINOR_VERSION           1
+#define CAUSE_IGNITION_ON                0x88
+#define CAUSE_IGNITION_OFF               0x08
+#define CAUSE_COURSE                     0x84
+
+#define MAJOR_VERSION                    2
+#define MINOR_VERSION                    2
 
 void usage(char* progname) {
   // Usage
@@ -144,20 +148,43 @@ int main(int argc, char** argv) {
   // to shorten code
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
   std::vector<jsoncons::json *> gps_records_copy;
+  std::vector<std::vector<jsoncons::json *>> trips;
+  int old_counter = 0;
   if (gps_records.is_array()) {
     for (size_t k = 0; k < gps_records.size(); k++) {
+      if ((gps_records[k].has_member("global_index") && gps_records[k]["global_index"].as<int>() < old_counter) ||
+        (gps_records[k].has_member("cause") && gps_records[k]["global_index"].as<int>() == CAUSE_IGNITION_ON && k > 0)) {
+        old_counter = 0;
+        trips.push_back(gps_records_copy);
+        gps_records_copy.clear();
+      }
+      if (gps_records[k].has_member("global_index")) old_counter = gps_records[k]["global_index"].as<int>();
       gps_records_copy.push_back(&(gps_records[k]));
     }
+    trips.push_back(gps_records_copy);
   }
   else if (gps_records.is_object()) {
     for (auto it = gps_records.begin_members(); it != gps_records.end_members(); it++) {
+      if ((it->value().has_member("global_index") && it->value()["global_index"].as<int>() < old_counter) ||
+        (it->value().has_member("cause") && it->value()["cause"].as<int>() == CAUSE_IGNITION_ON && it != gps_records.begin_members())) {
+        old_counter = 0;
+        trips.push_back(gps_records_copy);
+        gps_records_copy.clear();
+      }
+      if (it->value().has_member("global_index")) old_counter = it->value()["global_index"].as<int>();
       gps_records_copy.push_back(&(it->value()));
     }
+    trips.push_back(gps_records_copy);
   }
   else {
     std::cout << "BAD json, not array nor object...?!?!" << std::endl;
     exit(321);
   }
+
+  std::cout << "\ntrips size " << trips.size() << std::endl;
+  std::cout << "\nsizes "; for (auto t : trips) std::cout << t.size() << "   ";
+
+  return 0;
 
   // Generating HTML document
   output_file << html_header;
@@ -184,17 +211,17 @@ int main(int argc, char** argv) {
         tooltip += "<br />fix: " + gps_records_copy[i]->at("fix").as<std::string>();
     }
     output_file
-        << "["
-        << std::fixed << std::setprecision(6)
-        << (gps_records_copy[i]->has_member("lat") ? gps_records_copy[i]->at("lat").as<double>() : 90.0)
-        << ","
-        << (gps_records_copy[i]->has_member("lon") ? gps_records_copy[i]->at("lon").as<double>() : 0.0)
-        << ",'<p>"
-        << tooltip
-        << "</p>']"
-        << (i != gps_records_copy.size() - 1 ? ',' : ' ')
-        << "\n";
-  } 
+      << "["
+      << std::fixed << std::setprecision(6)
+      << (gps_records_copy[i]->has_member("lat") ? gps_records_copy[i]->at("lat").as<double>() : 90.0)
+      << ","
+      << (gps_records_copy[i]->has_member("lon") ? gps_records_copy[i]->at("lon").as<double>() : 0.0)
+      << ",'<p>"
+      << tooltip
+      << "</p>']"
+      << (i != gps_records_copy.size() - 1 ? ',' : ' ')
+      << "\n";
+  }
   output_file << html_footer;
   output_file.close();
 

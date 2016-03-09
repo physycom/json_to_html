@@ -86,6 +86,16 @@ R"(
         margin: 0px;
         padding: 0px
       }
+      #panel {
+        position: absolute;
+        top: 5px;
+        right: 0%;
+        margin-left: -180px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+      }
     </style>
     <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <!-- Remote Physycom libraries -->
