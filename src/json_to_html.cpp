@@ -1,5 +1,7 @@
 /* Copyright 2015 - Marco Di Cristina, Alessandro Fabbri, Mattia Guidetti, Stefano Sinigardi */
 
+
+
 /***************************************************************************
 This file is part of json_to_html.
 
@@ -31,15 +33,14 @@ using namespace std;
 #define CAUSE_IGNITION_OFF               0x08
 #define CAUSE_COURSE                     0x84
 
-#define MAJOR_VERSION                    2
-#define MINOR_VERSION                    2
+#define MAJOR_VERSION                    3
+#define MINOR_VERSION                    0
 
 void usage(char* progname) {
   // Usage
-  std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -[m/p] -u [undersampling] -s" << std::endl;
+  std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -u [undersampling] -s" << std::endl;
   std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
   std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
-  std::cout << "\t- -m markers mode / -p polyline mode" << std::endl;
   std::cout << "\t- [undersampling] a positive integer representing the undersampling factor" << std::endl;
   std::cout << "\t- -s optional flag for short point description (timestamp only)" << std::endl;
   exit(1);
@@ -50,7 +51,6 @@ int main(int argc, char** argv) {
 
   // Parsing command line
   std::string input_name, output_name, mode;
-  std::string html_header, html_footer;
   size_t undersampling = 1;
   bool verbose = true;
   if (argc > 2) { /* Parse arguments, if there are arguments supplied */
@@ -62,14 +62,6 @@ int main(int argc, char** argv) {
           break;
         case 'o':
           output_name = argv[++i];
-          break;
-        case 'm':
-          html_header = header_marker;
-          html_footer = footer_marker;
-          break;
-        case 'p':
-          html_header = header_poly;
-          html_footer = footer_poly;
           break;
         case 'u':
           undersampling = (size_t)atoi(argv[++i]);
@@ -135,16 +127,11 @@ int main(int argc, char** argv) {
   }
   else { cout << "SUCCESS: file " << output_name << " opened!" << std::endl; }
 
-  if (html_header == "" || html_footer == "") {
-    std::cout << "Display mode not specified. Quitting..." << std::endl;
-    usage(argv[0]);
-  }
-
   if (undersampling == 0) {
     std::cout << "WARNING: Undersampling factor is 0, set it to 1" << std::endl;
   }
 
-  // Parsing JSON gps database and create a local copy 
+  // Parsing JSON gps database and create a local vector of pointers 
   // to shorten code
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
   std::vector<jsoncons::json *> gps_records_copy;
@@ -181,48 +168,136 @@ int main(int argc, char** argv) {
     exit(321);
   }
 
-  std::cout << "\ntrips size " << trips.size() << std::endl;
-  std::cout << "\nsizes "; for (auto t : trips) std::cout << t.size() << "   ";
-
-  return 0;
-
   // Generating HTML document
   output_file << html_header;
-  for (size_t i = 0; i < gps_records_copy.size(); ++i) {
-    if (i % undersampling) continue;
-    std::string tooltip(to_string(i));
-    if (verbose) {
-      if (gps_records_copy[i]->has_member("date"))
-        tooltip = "date: " + gps_records_copy[i]->at("date").as<std::string>();
-      if (gps_records_copy[i]->has_member("alt"))
-        tooltip += "<br />altitude: " + gps_records_copy[i]->at("alt").as<std::string>();
-      if (gps_records_copy[i]->has_member("heading"))
-        tooltip += "<br />heading: " + gps_records_copy[i]->at("heading").as<std::string>();
-      if (gps_records_copy[i]->has_member("speed"))
-        tooltip += "<br />speed: " + gps_records_copy[i]->at("speed").as<std::string>();
-      if (gps_records_copy[i]->has_member("enabling"))
-        tooltip += "<br />enabling: " + gps_records_copy[i]->at("enabling").as<std::string>();
-      if (gps_records_copy[i]->has_member("tracking_glonass")) {
-        tooltip += "<br />glonass sats (used/seen): " + gps_records_copy[i]->at("using_glonass").as<std::string>() + " / " + gps_records_copy[i]->at("tracking_glonass").as<std::string>();
-        tooltip += "<br />gps sats (used/seen): " + gps_records_copy[i]->at("using_gps").as<std::string>() + " / " + gps_records_copy[i]->at("tracking_gps").as<std::string>();
-        tooltip += "<br />total sats (used/seen): " + gps_records_copy[i]->at("using_total").as<std::string>() + " / " + gps_records_copy[i]->at("tracking_total").as<std::string>();
-      }
-      if (gps_records_copy[i]->has_member("fix"))
-        tooltip += "<br />fix: " + gps_records_copy[i]->at("fix").as<std::string>();
-    }
-    output_file
-      << "["
-      << std::fixed << std::setprecision(6)
-      << (gps_records_copy[i]->has_member("lat") ? gps_records_copy[i]->at("lat").as<double>() : 90.0)
-      << ","
-      << (gps_records_copy[i]->has_member("lon") ? gps_records_copy[i]->at("lon").as<double>() : 0.0)
-      << ",'<p>"
-      << tooltip
-      << "</p>']"
-      << (i != gps_records_copy.size() - 1 ? ',' : ' ')
-      << "\n";
+  for (size_t i = 0; i < trips.size(); i++) {
+    output_file << "\t\t\tvar Trajectory_trip_" << i << ";" << endl;
+    output_file << "\t\t\tvar Markers_trip_" << i << " = [];" << endl;
   }
-  output_file << html_footer;
+  output_file << endl << "\t\t\tvar map;" << endl << endl;
+  output_file << "\t\t\tfunction initialize(){" << endl;
+  for (size_t i = 0; i < trips.size(); i++) {
+    output_file << endl << "\t\t\t\tvar Locations_trip_" << i << " = [" << endl;
+    // start of gps points 
+    for (size_t j = 0; j < trips[i].size(); j++) {
+      if (j % undersampling) continue;
+      std::string tooltip(to_string(j));
+      if (verbose) {
+        if (trips[i][j]->has_member("date"))
+          tooltip = "date: " + trips[i][j]->at("date").as<std::string>();
+        if (trips[i][j]->has_member("alt"))
+          tooltip += "<br />altitude: " + trips[i][j]->at("alt").as<std::string>();
+        if (trips[i][j]->has_member("heading"))
+          tooltip += "<br />heading: " + trips[i][j]->at("heading").as<std::string>();
+        if (trips[i][j]->has_member("speed"))
+          tooltip += "<br />speed: " + trips[i][j]->at("speed").as<std::string>();
+        if (trips[i][j]->has_member("enabling"))
+          tooltip += "<br />cause: " + trips[i][j]->at("enabling").as<std::string>();
+        if (trips[i][j]->has_member("tracking_glonass")) {
+          tooltip += "<br />glonass sats (used/seen): " + trips[i][j]->at("using_glonass").as<std::string>() + " / " + trips[i][j]->at("tracking_glonass").as<std::string>();
+          tooltip += "<br />gps sats (used/seen): " + trips[i][j]->at("using_gps").as<std::string>() + " / " + trips[i][j]->at("tracking_gps").as<std::string>();
+          tooltip += "<br />total sats (used/seen): " + trips[i][j]->at("using_total").as<std::string>() + " / " + trips[i][j]->at("tracking_total").as<std::string>();
+        }
+        if (trips[i][j]->has_member("fix"))
+          tooltip += "<br />fix: " + trips[i][j]->at("fix").as<std::string>();
+      }
+      output_file
+        << "["
+        << std::fixed << std::setprecision(6)
+        << (trips[i][j]->has_member("lat") ? trips[i][j]->at("lat").as<double>() : 90.0)
+        << ","
+        << (trips[i][j]->has_member("lon") ? trips[i][j]->at("lon").as<double>() : 0.0)
+        << ",'<p>"
+        << tooltip
+        << "</p>']"
+        << (i != trips[i].size() - 1 ? ',' : ' ')
+        << endl;
+    }
+    // end of gps points
+    output_file << "\t\t\t\t]" << endl;
+  }
+  output_file << R"(
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 17,
+          center : new google.maps.LatLng(Locations_trip_0[1][0], Locations_trip_0[1][1]),
+          mapTypeId : google.maps.MapTypeId.ROADMAP
+        });
+        
+        var infowindow = new google.maps.InfoWindow();
+
+        var Marker, i;
+)";
+  for (size_t i = 0; i < trips.size(); i++) {
+    output_file << R"(
+/////// TRIP )" << i << R"(
+        for(i = 0; i<Locations_trip_)" << i << R"(.length; i++) {
+          var marker_url;
+          if ( Locations_trip_)" << i << R"([i][2].search("first_last") != -1 )
+            marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/blue.png';
+          else if ( Locations_trip_)" << i << R"([i][2].search("rdp_engine") != -1 )
+            marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/green.png';
+          else if ( Locations_trip_)" << i << R"([i][2].search("smart_restore") != -1 )
+            marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/yellow.png';
+          else
+            marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/green.png';
+          
+          Marker = new google.maps.Marker({
+            position: new google.maps.LatLng( Locations_trip_)" << i << R"([i][0], Locations_trip_)" << i << R"([i][1] ),
+            map: map,
+            zIndex: Locations_trip_)" << i << R"([i][1],
+            icon: marker_url
+          });
+          Markers_trip_)" << i << R"(.push(Marker);
+
+          google.maps.event.addListener(Marker, 'click', (function(marker, i) {
+            return function() {
+              infowindow.setContent(Locations_trip_)" << i << R"([i][2]);
+              infowindow.open(map, marker);
+            }
+          })(Marker, i));
+        }
+)";
+    output_file << R"(
+        var PolyPath_trip_)" << i << R"( = [];
+        for (i = 0; i<Locations_trip_)" << i << R"(.length; i++) {
+          PolyPath_trip_)" << i << R"(.push(new google.maps.LatLng(Locations_trip_)" << i << R"([i][0], Locations_trip_)" << i << R"([i][1]))
+        }
+ 				Trajectory_trip_)" << i << R"( = new google.maps.Polyline({
+  					path: PolyPath_trip_)" << i << R"(,
+	  				geodesic: true,
+		  			strokeColor: '#cc0000',
+			  		strokeOpacity: 1.,
+				  	strokeWeight: 2
+				});
+        Trajectory_trip_)" << i << R"(.setMap(map);
+)";
+  }
+  output_file << endl << "\t\t\t\truler_map = new RulerMap(map)" << endl;
+  output_file << "\t\t}" << endl;
+  for (size_t i = 0; i < trips.size(); i++) {
+    output_file << R"(
+    function toggle_trip_)" << i << R"((){
+      Trajectory_trip_)" << i << R"(.setMap(Trajectory_trip_)" << i << R"(.getMap() ? null : map);
+      for (i = 0 ; i<Markers_trip_)" << i << R"(.length ; i++) {
+        var mark = Markers_trip_)" << i << R"([i];
+        mark.setMap(mark.getMap() ? null : map);
+      }
+    }
+)";
+  }
+  output_file << R"(
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+    <div id = "panel">
+)";
+  for (size_t i = 0; i < trips.size(); i++) {
+    output_file << "\t\t\t<button onclick = \"toggle_trip_" << i << "()\" style = \"background-color:#cc0000; color:#000000\">Trip " << i << "</button>" << endl;
+  }
+  output_file << R"(    </div>
+  </body>
+</html>
+)";
   output_file.close();
 
   return 0;
