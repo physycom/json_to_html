@@ -238,6 +238,10 @@ int main(int argc, char** argv) {
             marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/green.png';
           else if ( Locations_trip_)" << i << R"([i][2].search("smart_restore") != -1 )
             marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/yellow.png';
+          else if ( Locations_trip_)" << i << R"([i][2].search("ignition_on") != -1 )
+            marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/white.png';
+          else if ( Locations_trip_)" << i << R"([i][2].search("ignition_off") != -1 )
+            marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/black.png';
           else
             marker_url = 'http://maps.gpsvisualizer.com/google_maps/icons/circle/green.png';
           
