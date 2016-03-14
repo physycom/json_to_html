@@ -133,7 +133,6 @@ int main(int argc, char** argv) {
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
   std::vector<jsoncons::json *> gps_records_copy;
   std::vector<std::vector<jsoncons::json *>> trips;
-  int old_counter = 0;
   try {
     if (gps_records.is_array()) {
       for (size_t k = 0; k < gps_records.size(); k++) {
@@ -142,7 +141,6 @@ int main(int argc, char** argv) {
           ||
           (k > 0 && gps_records[k].has_member("cause") && gps_records[k]["cause"].as<int>() == CAUSE_IGNITION_ON)
           ) {
-          old_counter = 0;
           trips.push_back(gps_records_copy);
           gps_records_copy.clear();
         }
@@ -157,7 +155,6 @@ int main(int argc, char** argv) {
           ||
           (it != gps_records.begin_members() && it->value().has_member("cause") && it->value()["cause"].as<int>() == CAUSE_IGNITION_ON)
           ) {
-          old_counter = 0;
           trips.push_back(gps_records_copy);
           gps_records_copy.clear();
         }
