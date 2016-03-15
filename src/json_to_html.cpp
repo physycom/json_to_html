@@ -133,6 +133,7 @@ int main(int argc, char** argv) {
   jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
   std::vector<jsoncons::json *> gps_records_copy;
   std::vector<std::vector<jsoncons::json *>> trips;
+  int old_counter = 0;
   try {
     if (gps_records.is_array()) {
       for (size_t k = 0; k < gps_records.size(); k++) {
@@ -140,10 +141,14 @@ int main(int argc, char** argv) {
           (k > 0 && gps_records[k].has_member("enabling") && gps_records[k]["enabling"].as<string>() == "ignition_on")
           ||
           (k > 0 && gps_records[k].has_member("cause") && gps_records[k]["cause"].as<int>() == CAUSE_IGNITION_ON)
+          ||
+          (gps_records[k].has_member("global_index") && gps_records[k]["global_index"].as<int>() < old_counter)
           ) {
+          old_counter = 0;
           trips.push_back(gps_records_copy);
           gps_records_copy.clear();
         }
+        if (gps_records[k].has_member("global_index")) old_counter = gps_records[k]["global_index"].as<int>();
         gps_records_copy.push_back(&(gps_records[k]));
       }
       trips.push_back(gps_records_copy);
@@ -154,10 +159,14 @@ int main(int argc, char** argv) {
           (it != gps_records.begin_members() && it->value().has_member("enabling") && it->value()["enabling"].as<string>() == "ignition_on")
           ||
           (it != gps_records.begin_members() && it->value().has_member("cause") && it->value()["cause"].as<int>() == CAUSE_IGNITION_ON)
+          ||
+          (it->value().has_member("global_index") && it->value()["global_index"].as<int>() < old_counter)
           ) {
+          old_counter = 0;
           trips.push_back(gps_records_copy);
           gps_records_copy.clear();
         }
+        if (it->value().has_member("global_index")) old_counter = it->value()["global_index"].as<int>();
         gps_records_copy.push_back(&(it->value()));
       }
       trips.push_back(gps_records_copy);
@@ -214,7 +223,7 @@ int main(int argc, char** argv) {
         << ",'<p>"
         << tooltip
         << "</p>']"
-        << (i != trips[i].size() - 1 ? ',' : ' ')
+        << (j != trips[i].size() - 1 ? ',' : ' ')
         << endl;
     }
     // end of gps points
