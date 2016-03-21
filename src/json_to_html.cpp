@@ -186,9 +186,8 @@ int main(int argc, char** argv) {
   while (index < trips.size()) {
     if (trips[index].size() < 2) {
       trips.erase(trips.begin() + index);
-      index--;
     }
-    index++;
+    else index++;
   }
 
   // Generating HTML document
