@@ -181,6 +181,16 @@ int main(int argc, char** argv) {
     exit(5);
   }
 
+  // Safety loop to exclude 1-point trips
+  size_t index = 0;
+  while (index < trips.size()) {
+    if (trips[index].size() < 2) {
+      trips.erase(trips.begin() + index);
+      index--;
+    }
+    index++;
+  }
+
   // Generating HTML document
   output_file << html_header;
   for (size_t i = 0; i < trips.size(); i++) {
