@@ -220,3 +220,4 @@ xcuserdata/
 *.moved-aside
 ##############
 *.config
+*.db

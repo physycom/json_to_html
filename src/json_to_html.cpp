@@ -201,6 +201,7 @@ int main(int argc, char** argv) {
   for (size_t i = 0; i < trips.size(); i++) {
     output_file << endl << "\t\t\t\tvar Locations_trip_" << i << " = [" << endl;
     // start of gps points 
+    unsigned int last_timestamp = 0;
     for (size_t j = 0; j < trips[i].size(); j++) {
       if (j % undersampling) continue;
       std::string tooltip(to_string(j));
@@ -209,6 +210,13 @@ int main(int argc, char** argv) {
           tooltip = "date: " + trips[i][j]->at("date").as<std::string>();
         if (trips[i][j]->has_member("alt"))
           tooltip += "<br />altitude: " + trips[i][j]->at("alt").as<std::string>();
+        if (trips[i][j]->has_member("delta_dist"))
+          tooltip += "<br />ds (m): " + trips[i][j]->at("delta_dist").as<std::string>();
+        if (trips[i][j]->has_member("timestamp")) {
+          if( j != 0 ) last_timestamp = trips[i][j-1]->at("timestamp").as<unsigned int>();
+          else last_timestamp = 0;
+          tooltip += "<br />dt (s): " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>() - last_timestamp) ;
+        }
         if (trips[i][j]->has_member("heading"))
           tooltip += "<br />heading: " + trips[i][j]->at("heading").as<std::string>();
         if (trips[i][j]->has_member("speed"))
