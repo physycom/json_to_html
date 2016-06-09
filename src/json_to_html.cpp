@@ -215,6 +215,7 @@ int main(int argc, char** argv) {
         if (trips[i][j]->has_member("timestamp")) {
           if( j != 0 ) last_timestamp = trips[i][j-1]->at("timestamp").as<unsigned int>();
           else last_timestamp = 0;
+          tooltip += "<br />timestamp: " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>());
           tooltip += "<br />dt (s): " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>() - last_timestamp) ;
         }
         if (trips[i][j]->has_member("heading"))
