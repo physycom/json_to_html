@@ -32,7 +32,7 @@ using namespace std;
 #define CAUSE_COURSE                     0x84
 
 #define MAJOR_VERSION                    3
-#define MINOR_VERSION                    0
+#define MINOR_VERSION                    1
 
 void usage(char* progname) {
   // Usage
@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
           if( j != 0 ) last_timestamp = trips[i][j-1]->at("timestamp").as<unsigned int>();
           else last_timestamp = 0;
           tooltip += "<br />timestamp: " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>());
-          tooltip += "<br />dt (s): " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>() - last_timestamp) ;
+          tooltip += "<br />dt (s): " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>() - last_timestamp);
         }
         if (trips[i][j]->has_member("heading"))
           tooltip += "<br />heading: " + trips[i][j]->at("heading").as<std::string>();
@@ -231,6 +231,8 @@ int main(int argc, char** argv) {
         }
         if (trips[i][j]->has_member("fix"))
           tooltip += "<br />fix: " + trips[i][j]->at("fix").as<std::string>();
+        if (trips[i][j]->has_member("global_index"))
+          tooltip += "<br />global index: " + trips[i][j]->at("global_index").as<std::string>();
       }
       output_file
         << "["
