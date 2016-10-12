@@ -130,7 +130,15 @@ int main(int argc, char** argv) {
   }
 
   // Parsing JSON gps database and create a local vector of pointers 
-  jsoncons::json gps_records = jsoncons::json::parse_file(input_name);
+  jsoncons::json gps_records;
+  try {
+    gps_records = jsoncons::json::parse_file(input_name);
+  }
+  catch (std::exception &e) {
+    std::cout << "Invalid JSON input : " << input_name << std::endl;
+    std::cout << "EXCEPTION: " << e.what() << std::endl;
+    exit(-1);
+  }
   std::vector<jsoncons::json *> gps_records_copy;
   std::vector<std::vector<jsoncons::json *>> trips;
   int old_counter = 0;
@@ -204,7 +212,7 @@ int main(int argc, char** argv) {
     unsigned int last_timestamp = 0;
     for (size_t j = 0; j < trips[i].size(); j++) {
       if (j % undersampling) continue;
-      std::string tooltip(to_string(j));
+      std::string tooltip("#" + to_string(j));
       if (verbose) {
         if (trips[i][j]->has_member("date"))
           tooltip = "date: " + trips[i][j]->at("date").as<std::string>();
@@ -213,10 +221,21 @@ int main(int argc, char** argv) {
         if (trips[i][j]->has_member("delta_dist"))
           tooltip += "<br />ds (m): " + trips[i][j]->at("delta_dist").as<std::string>();
         if (trips[i][j]->has_member("timestamp")) {
-          if( j != 0 ) last_timestamp = trips[i][j-1]->at("timestamp").as<unsigned int>();
-          else last_timestamp = 0;
-          tooltip += "<br />timestamp: " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>());
-          tooltip += "<br />dt (s): " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>() - last_timestamp);
+          try {
+            if (j != 0) last_timestamp = trips[i][j - 1]->at("timestamp").as<unsigned int>();
+            else last_timestamp = 0;
+            tooltip += "<br />timestamp: " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>());
+            tooltip += "<br />dt (s): " + std::to_string(trips[i][j]->at("timestamp").as<unsigned int>() - last_timestamp);
+          }
+          catch (...) {
+            // old format compatibility (crash avoiding)
+            try {
+              tooltip += "<br />date:" + trips[i][j]->at("timestamp").as<std::string>();
+            }
+            catch (...) {
+              tooltip += "<br />timestamp: NA";
+            }
+          }
         }
         if (trips[i][j]->has_member("heading"))
           tooltip += "<br />heading: " + trips[i][j]->at("heading").as<std::string>();
