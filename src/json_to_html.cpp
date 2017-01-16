@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with json_to_html. If not, see <http://www.gnu.org/licenses/>.
 ***************************************************************************/
 
-#define _CRT_SECURE_NO_WARNINGS
 
 #include <fstream>
 #include <stdexcept>
@@ -318,13 +317,13 @@ int main(int argc, char** argv) {
         for (i = 0; i<Locations_trip_)" << i << R"(.length; i++) {
           PolyPath_trip_)" << i << R"(.push(new google.maps.LatLng(Locations_trip_)" << i << R"([i][0], Locations_trip_)" << i << R"([i][1]))
         }
- 				Trajectory_trip_)" << i << R"( = new google.maps.Polyline({
-  					path: PolyPath_trip_)" << i << R"(,
-	  				geodesic: true,
-		  			strokeColor: '#cc0000',
-			  		strokeOpacity: 1.,
-				  	strokeWeight: 2
-				});
+        Trajectory_trip_)" << i << R"( = new google.maps.Polyline({
+            path: PolyPath_trip_)" << i << R"(,
+            geodesic: true,
+            strokeColor: '#cc0000',
+            strokeOpacity: 1.,
+            strokeWeight: 2
+        });
         Trajectory_trip_)" << i << R"(.setMap(map);
 )";
   }
@@ -342,7 +341,7 @@ int main(int argc, char** argv) {
 )";
   }
   output_file << R"(
-		google.maps.event.addDomListener(window, 'load', initialize);
+    google.maps.event.addDomListener(window, 'load', initialize);
 
     </script>
     <div id = "panel">
