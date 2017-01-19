@@ -28,7 +28,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{87021DB5-07E6-4D4B-B495-5F06979FC5A4}</ProjectGuid>
-    <RootNamespace>Json_to_html</RootNamespace>
+    <RootNamespace>json_to_html</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <ProjectName>json_to_html</ProjectName>
   </PropertyGroup>
@@ -96,28 +96,34 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)\</OutDir>
+    <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\</IntDir>
     <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <OutDir>$(SolutionDir)\bin\</OutDir>
+    <IntDir>$(SolutionDir)\obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)\</OutDir>
+    <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\</IntDir>
     <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='x64|Win32'">
-    <OutDir>$(SolutionDir)\</OutDir>
+    <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\</IntDir>
     <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='x64|x64'">
     <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <OutDir>$(SolutionDir)\bin\</OutDir>
+    <IntDir>$(SolutionDir)\obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <OutDir>$(SolutionDir)\bin\</OutDir>
+    <IntDir>$(SolutionDir)\obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -202,29 +208,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="json_to_html.cpp" />
+    <ClCompile Include="../src/json_to_html.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header_html.h" />
-    <ClInclude Include="jsoncons\json.hpp" />
-    <ClInclude Include="jsoncons\json1.hpp" />
-    <ClInclude Include="jsoncons\json2.hpp" />
-    <ClInclude Include="jsoncons\jsoncons.hpp" />
-    <ClInclude Include="jsoncons\jsoncons_config.hpp" />
-    <ClInclude Include="jsoncons\json_deserializer.hpp" />
-    <ClInclude Include="jsoncons\json_exception.hpp" />
-    <ClInclude Include="jsoncons\json_filter.hpp" />
-    <ClInclude Include="jsoncons\json_input_handler.hpp" />
-    <ClInclude Include="jsoncons\json_output_handler.hpp" />
-    <ClInclude Include="jsoncons\json_parser.hpp" />
-    <ClInclude Include="jsoncons\json_parser_category.hpp" />
-    <ClInclude Include="jsoncons\json_reader.hpp" />
-    <ClInclude Include="jsoncons\json_serializer.hpp" />
-    <ClInclude Include="jsoncons\json_structures.hpp" />
-    <ClInclude Include="jsoncons\json_text_error_category.hpp" />
-    <ClInclude Include="jsoncons\json_type_traits.hpp" />
-    <ClInclude Include="jsoncons\output_format.hpp" />
-    <ClInclude Include="jsoncons\parse_error_handler.hpp" />
+    <ClInclude Include="../src/header_html.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
