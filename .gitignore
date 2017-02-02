@@ -215,6 +215,7 @@ build/
 !default.perspectivev3
 *.xccheckout
 xcuserdata/
+xcshareddata/
 #xcuserdata/**/*
 #!xcuserdata/**/xcschemes/*
 *.moved-aside

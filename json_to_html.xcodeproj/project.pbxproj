@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -23,28 +23,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		710694941E43990A00885BA4 /* jsoncons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = jsoncons; path = src/jsoncons/src/jsoncons; sourceTree = "<group>"; };
 		7BB807D21C30AA7D0017F10B /* json_to_html */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = json_to_html; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BB807DC1C30AC420017F10B /* header_html.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = header_html.h; path = src/header_html.h; sourceTree = "<group>"; };
 		7BB807DD1C30AC420017F10B /* json_to_html.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = json_to_html.cpp; path = src/json_to_html.cpp; sourceTree = "<group>"; };
-		7BB807DF1C30AC420017F10B /* json.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json.hpp; sourceTree = "<group>"; };
-		7BB807E01C30AC420017F10B /* json1.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json1.hpp; sourceTree = "<group>"; };
-		7BB807E11C30AC420017F10B /* json2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json2.hpp; sourceTree = "<group>"; };
-		7BB807E21C30AC420017F10B /* json_deserializer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_deserializer.hpp; sourceTree = "<group>"; };
-		7BB807E31C30AC420017F10B /* json_exception.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_exception.hpp; sourceTree = "<group>"; };
-		7BB807E41C30AC420017F10B /* json_filter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_filter.hpp; sourceTree = "<group>"; };
-		7BB807E51C30AC420017F10B /* json_input_handler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_input_handler.hpp; sourceTree = "<group>"; };
-		7BB807E61C30AC420017F10B /* json_output_handler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_output_handler.hpp; sourceTree = "<group>"; };
-		7BB807E71C30AC420017F10B /* json_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_parser.hpp; sourceTree = "<group>"; };
-		7BB807E81C30AC420017F10B /* json_parser_category.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_parser_category.hpp; sourceTree = "<group>"; };
-		7BB807E91C30AC420017F10B /* json_reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_reader.hpp; sourceTree = "<group>"; };
-		7BB807EA1C30AC420017F10B /* json_serializer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_serializer.hpp; sourceTree = "<group>"; };
-		7BB807EB1C30AC420017F10B /* json_structures.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_structures.hpp; sourceTree = "<group>"; };
-		7BB807EC1C30AC420017F10B /* json_text_error_category.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_text_error_category.hpp; sourceTree = "<group>"; };
-		7BB807ED1C30AC420017F10B /* json_type_traits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json_type_traits.hpp; sourceTree = "<group>"; };
-		7BB807EE1C30AC420017F10B /* jsoncons.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = jsoncons.hpp; sourceTree = "<group>"; };
-		7BB807EF1C30AC420017F10B /* jsoncons_config.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = jsoncons_config.hpp; sourceTree = "<group>"; };
-		7BB807F01C30AC420017F10B /* output_format.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = output_format.hpp; sourceTree = "<group>"; };
-		7BB807F11C30AC420017F10B /* parse_error_handler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parse_error_handler.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,8 +45,8 @@
 			children = (
 				7BB807DC1C30AC420017F10B /* header_html.h */,
 				7BB807DD1C30AC420017F10B /* json_to_html.cpp */,
-				7BB807DE1C30AC420017F10B /* jsoncons */,
 				7BB807D31C30AA7D0017F10B /* Products */,
+				710694941E43990A00885BA4 /* jsoncons */,
 			);
 			sourceTree = "<group>";
 		};
@@ -74,33 +56,6 @@
 				7BB807D21C30AA7D0017F10B /* json_to_html */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		7BB807DE1C30AC420017F10B /* jsoncons */ = {
-			isa = PBXGroup;
-			children = (
-				7BB807DF1C30AC420017F10B /* json.hpp */,
-				7BB807E01C30AC420017F10B /* json1.hpp */,
-				7BB807E11C30AC420017F10B /* json2.hpp */,
-				7BB807E21C30AC420017F10B /* json_deserializer.hpp */,
-				7BB807E31C30AC420017F10B /* json_exception.hpp */,
-				7BB807E41C30AC420017F10B /* json_filter.hpp */,
-				7BB807E51C30AC420017F10B /* json_input_handler.hpp */,
-				7BB807E61C30AC420017F10B /* json_output_handler.hpp */,
-				7BB807E71C30AC420017F10B /* json_parser.hpp */,
-				7BB807E81C30AC420017F10B /* json_parser_category.hpp */,
-				7BB807E91C30AC420017F10B /* json_reader.hpp */,
-				7BB807EA1C30AC420017F10B /* json_serializer.hpp */,
-				7BB807EB1C30AC420017F10B /* json_structures.hpp */,
-				7BB807EC1C30AC420017F10B /* json_text_error_category.hpp */,
-				7BB807ED1C30AC420017F10B /* json_type_traits.hpp */,
-				7BB807EE1C30AC420017F10B /* jsoncons.hpp */,
-				7BB807EF1C30AC420017F10B /* jsoncons_config.hpp */,
-				7BB807F01C30AC420017F10B /* output_format.hpp */,
-				7BB807F11C30AC420017F10B /* parse_error_handler.hpp */,
-			);
-			name = jsoncons;
-			path = src/jsoncons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,7 +84,7 @@
 		7BB807CA1C30AA7D0017F10B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Stefano Sinigardi";
 				TargetAttributes = {
 					7BB807D11C30AA7D0017F10B = {
@@ -138,7 +93,7 @@
 				};
 			};
 			buildConfigurationList = 7BB807CD1C30AA7D0017F10B /* Build configuration list for PBXProject "json_to_html" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -179,8 +134,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -202,7 +159,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -222,8 +179,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -239,7 +198,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
@@ -248,8 +207,10 @@
 		7BB807DA1C30AA7D0017F10B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = "src/
-";
+				HEADER_SEARCH_PATHS = (
+					src/,
+					"src/jsoncons/src/\n",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -257,8 +218,10 @@
 		7BB807DB1C30AA7D0017F10B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = "src/
-";
+				HEADER_SEARCH_PATHS = (
+					src/,
+					"src/jsoncons/src/\n",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
