@@ -1,5 +1,5 @@
 #!/bin/bash
-CONVERTER="./json2html.exe"
+CONVERTER=$(which json_to_html.exe)
 if [[ $1 == "-p" || $1 == "-m" ]]; then
 	for json in data/*.json; do
 		out="${json%.*}.html"

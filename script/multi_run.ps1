@@ -1,7 +1,7 @@
 $invocation = (Get-Variable MyInvocation).Value
 $pwd = Split-Path $invocation.MyCommand.Path
 echo "PS---> Working in: $pwd"
-$converter = ".\json2html.exe"
+$converter = "json_to_html.exe"
 
 if ( $args[0] -eq "-m" -or $args[0] -eq "-p" ){
     $FILES_INPUT = Get-ChildItem $pwd -Filter data\*.json
