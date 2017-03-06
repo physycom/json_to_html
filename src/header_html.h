@@ -42,11 +42,11 @@ R"(
       }
     </style>
     <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<!-- Remote Physycom libraries -->
-    <script type="text/javascript" src="https://raw.githubusercontent.com/physycom/ruler/master/markerwithlabel.js"></script>
-    <script type="text/javascript" src="https://raw.githubusercontent.com/physycom/ruler/master/ContextMenu.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://cdn.rawgit.com/physycom/ruler/master/ruler_map.css">
-    <script type="text/javascript" src="https://raw.githubusercontent.com/physycom/ruler/master/ruler_map.js"></script>       
+<!-- Remote Physycom libraries, bound to 9f9ad71c commit -->
+    <script type="text/javascript" src="https://cdn.rawgit.com/physycom/ruler/9f9ad71c/markerwithlabel.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/physycom/ruler/9f9ad71c/ContextMenu.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/physycom/ruler/9f9ad71c/ruler_map.css">
+    <script type="text/javascript" src="https://cdn.rawgit.com/physycom/ruler/9f9ad71c/ruler_map.js"></script>       
   </head> 
 
     <body>

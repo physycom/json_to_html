@@ -35,11 +35,12 @@ using namespace std;
 
 void usage(char* progname) {
   // Usage
-  std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -u [undersampling] -s" << std::endl;
-  std::cout << "\t- [input.json] UNIBO style GPS .json file to parse" << std::endl;
+  std::cout << "Usage: " << progname << " -i [input.json] -o [output.html] -u [undersampling] -s -[m|p]" << std::endl;
+  std::cout << "\t- [input.json] Physycom GNSS .json format file to parse" << std::endl;
   std::cout << "\t- [output.html] html script to display route in Google Maps (only)" << std::endl;
   std::cout << "\t- [undersampling] a positive integer representing the undersampling factor" << std::endl;
   std::cout << "\t- -s optional flag for short point description (timestamp only)" << std::endl;
+  std::cout << "\t- -[m|p] optional flag for markers (m), polyline (p), none for both" << std::endl;
   exit(1);
 }
 
@@ -50,6 +51,8 @@ int main(int argc, char** argv) {
   std::string input_name, output_name, mode;
   size_t undersampling = 1;
   bool verbose = true;
+  bool show_markers = true;
+  bool show_polyline = true;
   if (argc > 2) { /* Parse arguments, if there are arguments supplied */
     for (int i = 1; i < argc; i++) {
       if ((argv[i][0] == '-') || (argv[i][0] == '/')) {       // switches or options...
@@ -65,6 +68,12 @@ int main(int argc, char** argv) {
           break;
         case 's':
           verbose = false;
+          break;
+        case 'm':
+          show_polyline = false;
+          break;
+        case 'p':
+          show_markers = false;
           break;
         default:    // no match...
           std::cout << "ERROR: Flag \"" << argv[i] << "\" not recognized. Quitting..." << std::endl;
@@ -279,8 +288,9 @@ int main(int argc, char** argv) {
         var Marker, i;
 )";
   for (size_t i = 0; i < trips.size(); i++) {
-    output_file << R"(
-/////// TRIP )" << i << R"(
+    output_file << "/////// TRIP " << i << std::endl;
+    if (show_markers) {
+      output_file << R"(
         for(i = 0; i<Locations_trip_)" << i << R"(.length; i++) {
           var marker_url;
           if ( Locations_trip_)" << i << R"([i][2].search("first_last") != -1 )
@@ -312,7 +322,9 @@ int main(int argc, char** argv) {
           })(Marker, i));
         }
 )";
-    output_file << R"(
+    }
+    if (show_polyline) {
+      output_file << R"(
         var PolyPath_trip_)" << i << R"( = [];
         for (i = 0; i<Locations_trip_)" << i << R"(.length; i++) {
           PolyPath_trip_)" << i << R"(.push(new google.maps.LatLng(Locations_trip_)" << i << R"([i][0], Locations_trip_)" << i << R"([i][1]))
@@ -326,19 +338,22 @@ int main(int argc, char** argv) {
         });
         Trajectory_trip_)" << i << R"(.setMap(map);
 )";
+    }
   }
   output_file << endl << "\t\t\t\truler_map = new RulerMap(map)" << endl;
   output_file << "\t\t}" << endl;
   for (size_t i = 0; i < trips.size(); i++) {
     output_file << R"(
-    function toggle_trip_)" << i << R"((){
-      Trajectory_trip_)" << i << R"(.setMap(Trajectory_trip_)" << i << R"(.getMap() ? null : map);
-      for (i = 0 ; i<Markers_trip_)" << i << R"(.length ; i++) {
-        var mark = Markers_trip_)" << i << R"([i];
-        mark.setMap(mark.getMap() ? null : map);
-      }
-    }
-)";
+    function toggle_trip_)" << i << "(){" << std::endl;
+    if (show_polyline) output_file << R"(
+        Trajectory_trip_)" << i << ".setMap(Trajectory_trip_" << i << ".getMap() ? null : map);" << std::endl;
+    if (show_markers) output_file << R"(
+        for (i = 0; i < Markers_trip_)" << i << R"(.length; i++) {
+            var mark = Markers_trip_)" << i << R"([i];
+            mark.setMap(mark.getMap() ? null : map);
+        })";
+    output_file << R"(
+    })";
   }
   output_file << R"(
     google.maps.event.addDomListener(window, 'load', initialize);
