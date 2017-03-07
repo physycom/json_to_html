@@ -35,12 +35,13 @@ using namespace std;
 
 void usage(char* progname) {
   // Usage
-  cout << "Usage: " << progname << " -i [input.json] -o [output.html] -u [undersampling] -s -[m|p]" << endl;
+  cout << "Usage: " << progname << " -i [input.json] -o [output.html] -u [undersampling] -s -[m|p] -e" << endl;
   cout << "\t- [input.json] Physycom GNSS .json format file to parse" << endl;
   cout << "\t- [output.html] html script to display route in Google Maps (only)" << endl;
   cout << "\t- [undersampling] a positive integer representing the undersampling factor" << endl;
   cout << "\t- -s optional flag for short point description (timestamp only)" << endl;
   cout << "\t- -[m|p] optional flag for markers (m), polyline (p), none for displaying both" << endl;
+  cout << "\t- -e to export the image as [output.png]" << endl;
   exit(1);
 }
 
@@ -53,6 +54,7 @@ int main(int argc, char** argv) {
   bool verbose = true;
   bool show_markers = true;
   bool show_polyline = true;
+  bool export_map = false;
   if (argc > 2) { /* Parse arguments, if there are arguments supplied */
     for (int i = 1; i < argc; i++) {
       if ((argv[i][0] == '-') || (argv[i][0] == '/')) {       // switches or options...
@@ -73,6 +75,10 @@ int main(int argc, char** argv) {
           show_polyline = false;
           break;
         case 'p':
+          show_markers = false;
+          break;
+        case 'e':
+          export_map = true;
           show_markers = false;
           break;
         default:    // no match...
@@ -349,6 +355,15 @@ int main(int argc, char** argv) {
   }
   output_file << endl << "\t\t\t\tmap.fitBounds(bounds);" << endl;
   output_file << "\t\t\t\truler_map = new RulerMap(map)" << endl;
+
+  if (export_map) {
+    output_file << R"(
+        google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+        setTimeout(saveImage, 1000);
+  }); 
+
+)";
+  }
   output_file << "\t\t}" << endl;
   for (size_t i = 0; i < trips.size(); i++) {
     output_file << R"(
@@ -363,6 +378,25 @@ int main(int argc, char** argv) {
     output_file << R"(
     })";
   }
+
+  if (export_map) {
+    output_file << R"(
+    function saveImage(){
+        html2canvas($("#map"), {
+            useCORS: true,
+            onrendered: function(canvas) {
+                var dataURL = canvas.toDataURL("image/png");
+                var pom = document.createElement('a');
+                pom.setAttribute('href', dataURL ) ;
+                pom.setAttribute('download', ")" << output_name.substr(0,output_name.size() - 4) << R"(png" );
+                pom.click();
+                setTimeout(function(){ window.close(); }, 3000);
+            }
+        }); 
+    }
+)";
+  }
+
   output_file << R"(
     google.maps.event.addDomListener(window, 'load', initialize);
 
