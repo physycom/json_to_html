@@ -53,7 +53,4 @@ R"(
   </head> 
 
     <body>
-    <div id="map" style="width: 100%; height: 100%;"></div>
-    
-    <script type="text/javascript">
 )";

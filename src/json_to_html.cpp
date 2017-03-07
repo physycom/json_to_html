@@ -219,6 +219,11 @@ int main(int argc, char** argv) {
 
   // Generating HTML document
   output_file << html_header;
+  output_file << R"(    
+    <div id="map" style="width: )" << (export_map?"600px":"100%") << R"(; height: )" << (export_map ? "600px" : "100%") << R"(;"></div>
+    
+    <script type="text/javascript">
+)";
   for (size_t i = 0; i < trips.size(); i++) {
     output_file << "\t\t\tvar Trajectory_trip_" << i << ";" << endl;
     output_file << "\t\t\tvar Markers_trip_" << i << " = [];" << endl;
@@ -289,7 +294,8 @@ int main(int argc, char** argv) {
   }
   output_file << R"(
         map = new google.maps.Map(document.getElementById('map'), {
-          mapTypeId : google.maps.MapTypeId.ROADMAP
+          mapTypeId : google.maps.MapTypeId.ROADMAP,
+      		disableDefaultUI: )" << std::boolalpha << export_map << std::dec << R"(
         });
         
         var infowindow = new google.maps.InfoWindow();
