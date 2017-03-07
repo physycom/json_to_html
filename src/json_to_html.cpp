@@ -118,7 +118,6 @@ int main(int argc, char** argv) {
     cerr << "FAILED: Input file " << input_name << " could not be opened. Quitting..." << endl;
     exit(222);
   }
-  else { cout << "SUCCESS: file " << input_name << " opened!\n"; }
   input_file.close();
 
   if (output_name.size() > 5) {
@@ -132,12 +131,14 @@ int main(int argc, char** argv) {
     exit(33);
   }
 
+  if (output_name.substr(0, 2) == "./" || output_name.substr(0, 2) == ".\\") 
+    output_name = output_name.substr(2, output_name.size() - 2);
+
   output_file.open(output_name.c_str());
   if (!output_file.is_open()) {
     cerr << "FAILED: Output file " << output_name << " could not be opened. Quitting..." << endl;
     exit(333);
   }
-  else { cout << "SUCCESS: file " << output_name << " opened!" << endl; }
 
   if (undersampling == 0) {
     cerr << "WARNING: Undersampling factor is 0, set it to 1" << endl;
