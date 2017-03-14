@@ -27,10 +27,10 @@ It uses Google Maps as the underlying mapping source.
 
 ### Installation
 **make** and a **C++11** compatible compiler are required. Clone the repo and type ``make``, it should be enough in most cases!   
-There's also a **VS2015** solution avalaible.   
+There's also a **VS2017** solution avalaible.   
 Contains [jsoncons](https://github.com/danielaparker/jsoncons) as a git submodule.
 
-### Usage
+### Synopsis
 ```
 json_to_html.exe -i input.json -o output.html -m [or] -p
 ```
