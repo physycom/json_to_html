@@ -222,3 +222,5 @@ xcshareddata/
 ##############
 *.config
 *.db
+.vs/
+.vscode/
