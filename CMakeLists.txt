@@ -21,13 +21,12 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     endif()
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
-set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/src)
 if(MSVC)
   add_definitions(-D_SCL_SECURE_NO_WARNINGS)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-include_directories(${JSONCONS_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/src/jsoncons/src ${CMAKE_SOURCE_DIR}/src/utils)
 
 add_executable(json_to_html ${CMAKE_SOURCE_DIR}/src/json_to_html.cpp)
 install (TARGETS json_to_html DESTINATION ${CMAKE_SOURCE_DIR}/bin)
