@@ -24,7 +24,7 @@ along with json_to_html. If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 constexpr int MAJOR = 4;
-constexpr int MINOR = 0;
+constexpr int MINOR = 1;
 
 #define CAUSE_IGNITION_ON                0x88
 #define CAUSE_IGNITION_OFF               0x08
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 
   try 
   {
-    json_to_html j2h(export_map, verbose, undersampling);
+    json_to_html<jsoncons::json> j2h(export_map, verbose, undersampling);
     for(auto file : jconf.object_range())
     {
       j2h.push_file(file.value()["filename"].as<string>(), [&j2h]()
