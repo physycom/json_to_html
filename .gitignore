@@ -21,7 +21,6 @@ bld/
 data/
 
 #input output
-*.json
 *.html
 
 # Roslyn cache directories

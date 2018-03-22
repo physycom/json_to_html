@@ -34,19 +34,20 @@ void usage(char* progname)
 {
   // Usage
   string pn(progname);
-  cout << "Usage: " << pn.substr(pn.find_last_of("/\\")+1) << " -i [input.json] -o [output.html] -j [config.json] -u [undersampling] -s -[m|p] -e" << endl;
-  cout << "\t- [input.json] Physycom GNSS .json format file to parse" << endl;
-  cout << "\t- [output.html] html script to display route in Google Maps (only)" << endl;
-  cout << "\t- [undersampling] a positive integer representing the undersampling factor" << endl;
-  cout << "\t- -s optional flag for short point description (timestamp only)" << endl;
-  cout << "\t- -e to export the image as [output.png]" << endl;
-  cout << "\t- [config.json] configuration json. Sample:" << endl;
-  cout << R"({
+  cerr << "Usage: " << pn.substr(pn.find_last_of("/\\")+1) << " -i [input.json] -o [output.html] -j [config.json] -u [undersampling] -s -[m|p] -e" << endl;
+  cerr << "\t- [input.json] Physycom GNSS .json format file to parse" << endl;
+  cerr << "\t- [output.html] html script to display route in Google Maps (only)" << endl;
+  cerr << "\t- [undersampling] a positive integer representing the undersampling factor" << endl;
+  cerr << "\t- -s optional flag for short point description (timestamp only)" << endl;
+  cerr << "\t- -e to export the image as [output.png]" << endl;
+  cerr << "\t- [config.json] configuration json. Sample:" << endl;
+  cerr << R"({
   "tag 1" : 
   {
     "filename" : "file1.json", 
     "style" : "style1", // [ )";
-    for(auto s : allowed_styles) cout << s << R"( ]
+  for (const auto &s : allowed_styles) cout << s << ( s==allowed_styles.back() ? "" : " | ");
+  cerr << R"( ]
     "color" : "color1"  // in the hex literal form FF0000
   }
 }
