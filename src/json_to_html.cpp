@@ -34,7 +34,7 @@ void usage(char* progname)
 {
   // Usage
   string pn(progname);
-  cerr << "Usage: " << pn.substr(pn.find_last_of("/\\")+1) << " -i [input.json] -o [output.html] -j [config.json] -u [undersampling] -s -[m|p] -e" << endl;
+  cerr << "Usage: " << pn.substr(pn.find_last_of("/\\")+1) << " -i [input.json] -o [output.html] -j [config.json] -u [undersampling] -s -e" << endl;
   cerr << "\t- [input.json] Physycom GNSS .json format file to parse" << endl;
   cerr << "\t- [output.html] html script to display route in Google Maps (only)" << endl;
   cerr << "\t- [undersampling] a positive integer representing the undersampling factor" << endl;
