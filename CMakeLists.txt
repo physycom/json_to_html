@@ -2,31 +2,16 @@ cmake_minimum_required (VERSION 3.1)
 project (json_to_html)
 set (CMAKE_CXX_STANDARD 11)
 
-### Set output directories on a per-configuration base
-# Single configuration
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY $ENV{HOME}/bin )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY $ENV{HOME}/bin )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY $ENV{HOME}/bin )
-# Multi configuration
-foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
-    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    if( OUTPUTCONFIG STREQUAL "RELEASE" )
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} $ENV{HOME}/bin )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} $ENV{HOME}/bin )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} $ENV{HOME}/bin )
-    else()
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/bin/${OUTPUTCONFIG} )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/bin/${OUTPUTCONFIG} )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/bin/${OUTPUTCONFIG} )
-    endif()
-endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
-
-if(MSVC)
-  add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+if (EXISTS "$ENV{WORKSPACE}/sysconfig/cmake/physycom_config.cmake")
+   message(STATUS "Enabling physycom settings")
+   include("$ENV{WORKSPACE}/sysconfig/cmake/physycom_config.cmake")
+else()
+   message(STATUS "Unable to find physycom settings file")
 endif()
 
-include_directories(${CMAKE_SOURCE_DIR}/src/jsoncons/src ${CMAKE_SOURCE_DIR}/src/utils)
+set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/include)
+set(UTILS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/utils)
+
+include_directories(${UTILS_INCLUDE_DIR} ${JSONCONS_INCLUDE_DIR})
 
 add_executable(json_to_html ${CMAKE_SOURCE_DIR}/src/json_to_html.cpp)
-install (TARGETS json_to_html DESTINATION ${CMAKE_SOURCE_DIR}/bin)
