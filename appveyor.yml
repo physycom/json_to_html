@@ -34,6 +34,6 @@ install:
   - if [%COMPILER%]==[vs]     cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE="Debug"
 
 build_script:
-  - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake --build . --target install'
-  - if [%COMPILER%]==[vs]     cmake --build . --target install
+  - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake --build .'
+  - if [%COMPILER%]==[vs]     cmake --build .
   -
