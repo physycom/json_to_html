@@ -30,7 +30,7 @@ constexpr int MINOR = 1;
 #define CAUSE_IGNITION_OFF               0x08
 #define CAUSE_COURSE                     0x84
 
-void usage(char* progname) 
+void usage(char* progname)
 {
   // Usage
   string pn(progname);
@@ -42,9 +42,9 @@ void usage(char* progname)
   cerr << "\t- -e to export the image as [output.png]" << endl;
   cerr << "\t- [config.json] configuration json. Sample:" << endl;
   cerr << R"({
-  "tag 1" : 
+  "tag 1" :
   {
-    "filename" : "file1.json", 
+    "filename" : "file1.json",
     "style" : "style1", // [ )";
   for (const auto &s : allowed_styles) cout << s << ( s==allowed_styles.back() ? "" : " | ");
   cerr << R"( ]
@@ -119,7 +119,7 @@ int main(int argc, char** argv)
     exit(2);
   }
 
-  try 
+  try
   {
     json_to_html<jsoncons::json> j2h(export_map, verbose, undersampling);
     for(auto file : jconf.object_range())
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
       {
         int old_counter = 0;
         vector<jsoncons::json> temp_trip;
-        for (size_t k = 0; k < j2h.records.size(); k++) 
+        for (size_t k = 0; k < j2h.records.size(); k++)
         {
           if (
             (k > 0 && j2h.records[k].has_member("enabling") && j2h.records[k]["enabling"].as<string>() == "ignition_on")
@@ -136,7 +136,7 @@ int main(int argc, char** argv)
             (k > 0 && j2h.records[k].has_member("cause") && j2h.records[k]["cause"].as<int>() == CAUSE_IGNITION_ON)
             ||
             (j2h.records[k].has_member("global_index") && j2h.records[k]["global_index"].as<int>() < old_counter)
-            ) 
+            )
           {
             old_counter = 0;
             j2h.trips.push_back(temp_trip);
@@ -146,12 +146,12 @@ int main(int argc, char** argv)
           temp_trip.push_back(j2h.records[k]);
         }
         j2h.trips.push_back(temp_trip);
-      });   
-      j2h.init_specs(file.key(), file.value()); 
+      });
+      j2h.init_specs(string(file.key()), file.value());
     }
     j2h.dump_html(output_name);
   }
-  catch (exception &e) 
+  catch (exception &e)
   {
     cerr << "EXC: " << e.what() << endl;
     exit(1);
